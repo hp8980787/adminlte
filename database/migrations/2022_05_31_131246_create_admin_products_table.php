@@ -18,8 +18,9 @@ class CreateAdminProductsTable extends Migration
             $table->string('sku')->unique();
             $table->string('name')->comment('jianjie1');
             $table->string('category');
+            $table->string('brand');
             $table->string('cover_img');
-            $table->string('imgs');
+            $table->string('imgs')->nullable();
             $table->string('dl')->nullable();
             $table->string('dy')->nullable();
             $table->string('type')->nullable();
