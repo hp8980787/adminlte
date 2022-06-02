@@ -47,4 +47,5 @@ class CreateAdminProductsTable extends Migration
     {
         Schema::dropIfExists('admin_products');
     }
+    
 }

@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Utils\Admin\UploadFile;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ProductsController extends Controller
 {
@@ -21,11 +22,25 @@ class ProductsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View|array
      */
-    public function index(): View
+    public function index(ProductRequest $request)
     {
-        return view('admin.products.index');
+
+        if ($request->ajax()) {
+            $products = $this->product->where('status', 1)->paginate(2);
+            $data = $products->values()->toArray();
+            return response()->json($data);
+        }
+        $products = $this->product->where('status', 1)->paginate(2);
+        $fields = $this->product->getTableColumns();
+//        array_push($fields, '操作');
+        $data = $products->values()->toArray();
+        $data = array_map(function ($val) {
+            return array_values($val);
+        }, $data);
+
+        return view('admin.products.index', compact('products', 'fields', 'data'));
     }
 
     /**
@@ -54,6 +69,7 @@ class ProductsController extends Controller
         $data['cover_img'] = $coverImg;
         Product::query()->create($data);
 
+        return redirect()->route('products.index')->with('toast_success', 'Task Created Successfully!');
     }
 
     /**

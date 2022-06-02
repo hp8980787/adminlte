@@ -3,9 +3,11 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use  App\Http\Requests\Admin\TraitValidator\BaseValidator;
 
 class ProductRequest extends FormRequest
 {
+    use BaseValidator;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -33,11 +35,15 @@ class ProductRequest extends FormRequest
                     'brand' => 'required',
                     'cover_img' => 'required',
                     'replace' => 'required',
-                    'description' => 'required'
+                    'description' => 'required',
+                    'bzq' => 'required',
+                    'size' => 'required',
                 ];
         }
         return [
             //
         ];
     }
+
+
 }
