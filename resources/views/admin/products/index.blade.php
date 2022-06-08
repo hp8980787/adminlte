@@ -7,8 +7,8 @@
 @stop
 
 @section('content')
-    <div class="row">
 
+    <div class="row">
         {{-- Themed --}}
         <x-adminlte-modal id="modalPurple" title="添加商品" theme="purple" icon="fas fa-bolt" size='lg' disable-animations>
 
@@ -119,143 +119,162 @@
         <x-adminlte-button label="添加商品" data-toggle="modal" data-target="#modalPurple" class="bg-purple"/>
 
     </div>
-    {{--    <div class="row">--}}
-    {{--        <div class="col-lg-12 col-sm-12">--}}
-    {{--            @php--}}
-    {{--                $heads = [--}}
-    {{--                    'ID',--}}
-    {{--                    'Name',--}}
-    {{--                    ['label' => 'Phone', 'width' => 40],--}}
-    {{--                    ['label' => 'Actions', 'no-export' => true, 'width' => 5],--}}
-    {{--                ];--}}
+    <div class="row mt-3">
+        <table data-virtual-scroll id="table">
 
-    {{--                $btnEdit = '<button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit">--}}
-    {{--                                <i class="fa fa-lg fa-fw fa-pen"></i>--}}
-    {{--                            </button>';--}}
-    {{--                $btnDelete = '<button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete">--}}
-    {{--                                  <i class="fa fa-lg fa-fw fa-trash"></i>--}}
-    {{--                              </button>';--}}
-    {{--                $btnDetails = '<button class="btn btn-xs btn-default text-teal mx-1 shadow" title="Details">--}}
-    {{--                                   <i class="fa fa-lg fa-fw fa-eye"></i>--}}
-    {{--                               </button>';--}}
-
-    {{--                $config = [--}}
-    {{--                    'data' => [--}}
-    {{--                        [22, 'John Bender', '+02 (123) 123456789', '<nobr>'.$btnEdit.$btnDelete.$btnDetails.'</nobr>'],--}}
-    {{--                        [19, 'Sophia Clemens', '+99 (987) 987654321', '<nobr>'.$btnEdit.$btnDelete.$btnDetails.'</nobr>'],--}}
-    {{--                        [3, 'Peter Sousa', '+69 (555) 12367345243', '<nobr>'.$btnEdit.$btnDelete.$btnDetails.'</nobr>'],--}}
-    {{--                    ],--}}
-    {{--                    'order' => [[1, 'asc']],--}}
-    {{--                    'columns' => [null, null, null, ['orderable' => false]],--}}
-    {{--                ];--}}
-    {{--            @endphp--}}
-
-    {{--            --}}{{-- Minimal example / fill data using the component slot --}}
-    {{--            <x-adminlte-datatable id="table1" :heads="$fields" pageing="false" with-buttons>--}}
-    {{--                @foreach($data as $row)--}}
-    {{--                    <tr>--}}
-    {{--                        @foreach($row as $cell)--}}
-    {{--                            <td>{!! $cell !!}</td>--}}
-    {{--                        @endforeach--}}
-    {{--                        <td>--}}
-    {{--                            1111--}}
-    {{--                        </td>--}}
-    {{--                    </tr>--}}
-    {{--                @endforeach--}}
-    {{--            </x-adminlte-datatable>--}}
-
-
-    {{--            <div class="page mt-3" >--}}
-    {{--              {{ $products->links() }}--}}
-    {{--          </div>--}}
-    {{--        </div>--}}
-
-    {{--    </div>--}}
-    <div class="row">
-        <div class="col-lg-12">
-            <table id="table_id" class="table table-striped table-bordered" style="width:100%">
-                <thead>
-                <tr>
-                    @foreach($fields as $field)
-                        <th>{{ $field }}</th>
-                    @endforeach
-                </tr>
-                </thead>
-                <tbody>
-
-
-                </tbody>
-                {{--                <tfoot>--}}
-                {{--                @foreach($fields as $field)--}}
-                {{--                    <th>{{ $field }}</th>--}}
-                {{--                @endforeach--}}
-                {{--                </tfoot>--}}
-            </table>
-        </div>
+        </table>
     </div>
+
 @stop
 
 @section('css')
 
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/custom.css">
+
 @stop
 
 @section('js')
+
+    <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
+    <script src="/bootstrap-table-zh-CN.js"></script>
+
     <script>
-
-        $(document).ready(function () {
-            $('#table_id').DataTable({
-                paging: true,
-                scrollY: 400,
-                ajax: {
-                    url: "{{ adminRoute('products.index') }}",
-
-                    "dataSrc": "",
-                },
-                columns: [
-                    {data: 'id'},
-                    {data: 'sku'},
-                    {data: 'name'},
-                    {data: 'category'},
-                    {data: 'brand'},
-                    {data: 'cover_img'},
-                    {data: 'imgs'},
-                    {data: 'dl'},
-                    {data: 'dy'},
-                    {data: 'type '},
-                    {data: 'size'},
-                    {data: 'bzq'},
-                    {data: 'price_eu'},
-                    {data: 'price_us'},
-                    {data: 'price_uk'},
-                    {data: 'price_jp'},
-                    {data: 'status'},
-                    {data: 'replace'},
-                    {data: 'description'},
-                    {data: 'stock'},
-                    {data: 'created_at'},
-                    {data: 'updated_at'},
-
-
-                ],
-
-            });
-        });
-
-        function generateSku() {
-            $.ajax({
-                method: 'get',
-                url: "{{ adminRoute('sku') }}",
-                data: {},
-                success: function (response) {
-                    $("input[name='sku']").val(response);
-                }
+        function ajaxRequest(params) {
+            var url = "{{ adminRoute('products.index') }}"
+            $.get(url + '?' + $.param(params.data)).then(function (res) {
+                params.success(res.data)
             })
         }
+
+        function operateFormatter(value, row, index) {
+            return [
+                '<a class="edit" href="javascript:void(0)" title="edit">',
+                '<i class="fas fa-edit"></i>',
+                '</a>  ',
+                '<a class="remove" href="javascript:void(0)" title="Remove">',
+                '<i class="fa fa-trash"></i>',
+                '</a>'
+            ].join('')
+        }
+
+        window.operateEvents = {
+            'click .edit': function (e, value, row, index) {
+
+                window.location.href = row['editUrl'];
+                alert('You click like action, row: ' + JSON.stringify(row))
+            },
+            'click .remove': function (e, value, row, index) {
+                $table.bootstrapTable('remove', {
+                    field: 'id',
+                    values: [row.id]
+                })
+            }
+        }
+        $('#table').bootstrapTable({
+
+            ajax: function (params) {
+                var url = "{{ adminRoute('products.index') }}"
+                $.get(url + '?' + $.param(params.data)).then(function (res) {
+                    const data = res.data;
+                    data['total'] = res.meta.total;
+                    data['totalNotFiltered'] = res.meta.total;
+                    params.success(data)
+
+                })
+            },
+            queryParamsType:'',
+            queryParams: function (params) {
+                return {
+                    perPage: params.pageSize,   //页面大小
+                    search: params.searchText, //搜索
+                    order: params.order, //排序
+                    ordername: params.sort, //排序
+                    page:params.pageNumber,
+                };
+            },
+            showHeader: true,
+            showColumns: true,
+            showRefresh: true,
+            pagination: true,//分页
+            sidePagination: 'server',//服务器端分页
+            pageNumber: 1,
+            pageList: [5, 10, 20, 50,100],//分页步进值
+            search: true,//显示搜索框
+            columns: [
+                {
+                    checkbox: true
+                },
+                {
+                    field: 'id',
+                    title: 'id'
+                }, {
+                    field: 'sku',
+                    title: 'sku'
+                }, {
+                    field: 'name',
+                    title: 'name(jianjie1)'
+                }, {
+                    field: 'category',
+                    title: '分类'
+                }, {
+                    field: 'brand',
+                    title: '品牌'
+                }, {
+                    field: 'cover_img',
+                    title: '封面图'
+                }, {
+                    field: 'imgs',
+                    title: '多图'
+                }, {
+                    field: 'dl',
+                    title: 'dl'
+                }, {
+                    field: 'dy',
+                    title: 'dy'
+                }, {
+                    field: 'size',
+                    title: 'size'
+                }, {
+                    field: 'bzq',
+                    title: 'bzq'
+                }, {
+                    field: 'price_eu',
+                    title: '欧元价格'
+                }, {
+                    field: 'price_us',
+                    title: '美元价格'
+                }, {
+                    field: 'price_uk',
+                    title: '英镑价格'
+                }, {
+                    field: 'price_jp',
+                    title: '日元价格'
+                }, {
+                    field: 'status',
+                    title: '状态'
+                }, {
+                    field: 'replace',
+                    title: 'rep 可替换产品'
+                }, {
+                    field: 'description',
+                    title: '描述'
+                }, {
+                    field: 'stock',
+                    title: '库存'
+                }, {
+                    field: 'operate',
+                    title: '操作',
+                    align: 'center',
+                    clickToSelect: false,
+                    events: window.operateEvents,
+                    formatter: operateFormatter
+                }
+            ]
+        })
     </script>
-    <script> console.log('Hi!'); </script>
 @stop
 
 @section('plugins.BsCustomFileInput', true)
 @section('plugins.Summernote', true)
-@section('plugins.Datatables', true)
-@section('plugins.DatatablesPlugin', true)
+

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductRequest;
+use App\Http\Resources\ProductCollection;
 use App\Models\Product;
 use App\Utils\Admin\UploadFile;
 use Illuminate\Http\Request;
@@ -28,19 +29,22 @@ class ProductsController extends Controller
     {
 
         if ($request->ajax()) {
-            $products = $this->product->where('status', 1)->paginate(2);
-            $data = $products->values()->toArray();
-            return response()->json($data);
-        }
-        $products = $this->product->where('status', 1)->paginate(2);
-        $fields = $this->product->getTableColumns();
-//        array_push($fields, '操作');
-        $data = $products->values()->toArray();
-        $data = array_map(function ($val) {
-            return array_values($val);
-        }, $data);
+            $perPage = $request->perPage ?: 20;
 
-        return view('admin.products.index', compact('products', 'fields', 'data'));
+            $query = $this->product->where('status', 1);
+            if ($request->search) {
+                $search = $request->search;
+                $query->where('name', 'like', "%$search%")
+                    ->orWhere('category', 'like', "%$search%")
+                    ->orWhere('replace', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%")
+                    ->orWhere('sku', 'like', "%$search%");
+            }
+            $products = $query->paginate($perPage);
+
+            return response()->json(new ProductCollection($products));
+        }
+        return view('admin.products.index');
     }
 
     /**

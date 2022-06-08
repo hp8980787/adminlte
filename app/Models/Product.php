@@ -24,31 +24,5 @@ class Product extends Model
         return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
     }
 
-    public function getBzqAttribute($value)
-    {
-        if (!$value) {
-            return '空';
-        }
-    }
 
-    public function getImgsAttribute($value)
-    {
-        if (!$value) {
-            return '空';
-        }
-    }
-
-    public function getTypeAttribute($value)
-    {
-        if (!$value) {
-            return '空';
-        }
-    }
-
-    public function getDescriptionAttribute($value)
-    {
-        if (!$value) {
-            return '空';
-        }
-    }
 }
