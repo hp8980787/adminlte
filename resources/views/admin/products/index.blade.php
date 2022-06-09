@@ -101,7 +101,7 @@
                     </x-slot>
                 </x-adminlte-input>
 
-                <x-adminlte-input value="{{ old('stock') }}" name="stock" type="number" min="0" label="库存" value="0">
+                <x-adminlte-input value="{{ old('stock') }}" name="stock" type="number" min="0" label="库存" >
                 </x-adminlte-input>
                 <x-adminlte-textarea value="{{ old('replace') }}" name="replace" label="替换品(必须)" placholder="用空格分割"
                                      required="required"
@@ -121,7 +121,6 @@
     </div>
     <div class="row mt-3">
         <table data-virtual-scroll id="table">
-
         </table>
     </div>
 
@@ -140,6 +139,15 @@
     <script src="/bootstrap-table-zh-CN.js"></script>
 
     <script>
+        function generateSku() {
+            $.ajax({
+                url:"{{ adminRoute('sku') }}",
+                success:(response)=>{
+                    $("input[name='sku']").val(response);
+                }
+            })
+        }
+
         function ajaxRequest(params) {
             var url = "{{ adminRoute('products.index') }}"
             $.get(url + '?' + $.param(params.data)).then(function (res) {
@@ -160,19 +168,39 @@
 
         window.operateEvents = {
             'click .edit': function (e, value, row, index) {
-
                 window.location.href = row['editUrl'];
-                alert('You click like action, row: ' + JSON.stringify(row))
             },
             'click .remove': function (e, value, row, index) {
-                $table.bootstrapTable('remove', {
-                    field: 'id',
-                    values: [row.id]
+                const delUrl = row['delUrl'];
+                Swal.fire({
+                    title: '是否删除?',
+                    text: "你将会删除这条数据",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: delUrl,
+                            method: 'delete',
+                            data: {},
+                            success: (response) => {
+                                $('#table').bootstrapTable('refresh')
+                                Swal.fire(
+                                    '删除成功!',
+                                    '删除成功!',
+                                    'success'
+                                )
+                            }
+                        });
+
+                    }
                 })
             }
         }
         $('#table').bootstrapTable({
-
             ajax: function (params) {
                 var url = "{{ adminRoute('products.index') }}"
                 $.get(url + '?' + $.param(params.data)).then(function (res) {
@@ -183,14 +211,14 @@
 
                 })
             },
-            queryParamsType:'',
+            queryParamsType: '',
             queryParams: function (params) {
                 return {
                     perPage: params.pageSize,   //页面大小
                     search: params.searchText, //搜索
                     order: params.order, //排序
                     ordername: params.sort, //排序
-                    page:params.pageNumber,
+                    page: params.pageNumber,
                 };
             },
             showHeader: true,
@@ -199,8 +227,9 @@
             pagination: true,//分页
             sidePagination: 'server',//服务器端分页
             pageNumber: 1,
-            pageList: [5, 10, 20, 50,100],//分页步进值
+            pageList: [5, 10, 20, 50, 100],//分页步进值
             search: true,//显示搜索框
+            width: 500,
             columns: [
                 {
                     checkbox: true
@@ -225,7 +254,8 @@
                     title: '封面图'
                 }, {
                     field: 'imgs',
-                    title: '多图'
+                    title: '多图',
+                    cardVisible:false
                 }, {
                     field: 'dl',
                     title: 'dl'
@@ -277,4 +307,4 @@
 
 @section('plugins.BsCustomFileInput', true)
 @section('plugins.Summernote', true)
-
+@section('plugins.Sweetalert2', true);

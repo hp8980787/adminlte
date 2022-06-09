@@ -36,8 +36,7 @@ class ProductRequest extends FormRequest
                     'cover_img' => 'required',
                     'replace' => 'required',
                     'description' => 'required',
-                    'bzq' => 'required',
-                    'size' => 'required',
+
                 ];
         }
         return [

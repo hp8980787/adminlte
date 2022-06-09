@@ -8,6 +8,8 @@ use App\Http\Resources\ProductCollection;
 use App\Models\Product;
 use App\Utils\Admin\UploadFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -30,7 +32,6 @@ class ProductsController extends Controller
 
         if ($request->ajax()) {
             $perPage = $request->perPage ?: 20;
-
             $query = $this->product->where('status', 1);
             if ($request->search) {
                 $search = $request->search;
@@ -65,15 +66,24 @@ class ProductsController extends Controller
      */
     public function store(ProductRequest $request)
     {
-
-
         $fillable = $this->product->getFillable();
         $data = $request->only($fillable);
-        $coverImg = $request->file('cover_img')->storeAs('images', $request->file('cover_img')->getClientOriginalName());
+        $coverImg = Storage::disk('images')->put('product', $request->file('cover_img'));
         $data['cover_img'] = $coverImg;
+        if ($request->file('ifMultiple')) {
+            $imgs = [];
+            foreach ($request->ifMultiple as $file) {
+
+                $file= Storage::disk('images')->put('product', $file);
+
+                $imgs[] = Storage::disk('images')->url($file);
+            }
+            $data['imgs'] = join('|', $imgs);
+        }
+
         Product::query()->create($data);
 
-        return redirect()->route('products.index')->with('toast_success', 'Task Created Successfully!');
+        return redirect(adminRoute('products.index'))->with('toast_success', 'Task Created Successfully!');
     }
 
     /**
@@ -95,7 +105,9 @@ class ProductsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $product = Product::query()->findOrFail($id);
+
+        return \view('admin.products.edit', compact('product'));
     }
 
     /**
@@ -107,7 +119,17 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->only($this->product->getFillable());
+        $product = $this->product->findOrFail($id);
+        if ($request->cover_img) {
+            Storage::disk('images')->delete($product->cover_img);
+            $file = Storage::disk('images')->put('product', $request->file('cover_img'));
+            $url = Storage::disk('images')->url($file);
+            $data['cover_img'] = $url;
+
+        }
+        $this->product->where('id', $id)->update($data);
+        return redirect(adminRoute('products.index'))->with('toast_success', '修改成功!');
     }
 
     /**
@@ -118,6 +140,8 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Product::query()->where('id', $id)->delete();
+
+        return response('删除成功！', 200);
     }
 }
