@@ -101,7 +101,7 @@
                     </x-slot>
                 </x-adminlte-input>
 
-                <x-adminlte-input value="{{ old('stock') }}" name="stock" type="number" min="0" label="库存" >
+                <x-adminlte-input value="{{ old('stock') }}" name="stock" type="number" min="0" label="库存">
                 </x-adminlte-input>
                 <x-adminlte-textarea value="{{ old('replace') }}" name="replace" label="替换品(必须)" placholder="用空格分割"
                                      required="required"
@@ -120,16 +120,26 @@
 
     </div>
     <div class="row mt-3">
-        <table data-virtual-scroll id="table">
-        </table>
+        <div class="table-responsive">
+            <table data-height="800" data-show-columns="true" id="table">
+            </table>
+        </div>
     </div>
 
 @stop
 
 @section('css')
+    <style>
+        .min-width-200 {
+            min-width: 200px
+        }
+
+        .min-width-100 {
+            min-width: 100px;
+        }
+    </style>
 
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css">
-    <link rel="stylesheet" href="/custom.css">
 
 @stop
 
@@ -141,8 +151,8 @@
     <script>
         function generateSku() {
             $.ajax({
-                url:"{{ adminRoute('sku') }}",
-                success:(response)=>{
+                url: "{{ adminRoute('sku') }}",
+                success: (response) => {
                     $("input[name='sku']").val(response);
                 }
             })
@@ -200,6 +210,15 @@
                 })
             }
         }
+
+        function imgsFormatter(value,row,index) {
+            return "<a>点击查看</a>"
+        }
+
+        function imgFormatter(value,row,index) {
+        return `<img width="100px" src="/${value}">`;
+        }
+
         $('#table').bootstrapTable({
             ajax: function (params) {
                 var url = "{{ adminRoute('products.index') }}"
@@ -221,50 +240,56 @@
                     page: params.pageNumber,
                 };
             },
+
             showHeader: true,
-            showColumns: true,
+            // showColumns: true,
+            hideColumn:['sku'],
             showRefresh: true,
             pagination: true,//分页
             sidePagination: 'server',//服务器端分页
             pageNumber: 1,
             pageList: [5, 10, 20, 50, 100],//分页步进值
             search: true,//显示搜索框
-            width: 500,
             columns: [
                 {
                     checkbox: true
                 },
                 {
                     field: 'id',
-                    title: 'id'
+                    title: 'id',
                 }, {
                     field: 'sku',
-                    title: 'sku'
+                    title: 'sku',
+                    class: 'min-width-200'
                 }, {
                     field: 'name',
-                    title: 'name(jianjie1)'
+                    title: 'name(jianjie1)',
                 }, {
                     field: 'category',
-                    title: '分类'
+                    title: '分类',
                 }, {
                     field: 'brand',
-                    title: '品牌'
+                    title: '品牌',
                 }, {
                     field: 'cover_img',
-                    title: '封面图'
+                    title: '封面图',
+                    class: 'min-width-100',
+                    formatter:imgFormatter,
+
                 }, {
                     field: 'imgs',
                     title: '多图',
-                    cardVisible:false
+                    cardVisible: false,
+                    formatter: imgsFormatter
                 }, {
                     field: 'dl',
-                    title: 'dl'
+                    title: 'dl',
                 }, {
                     field: 'dy',
-                    title: 'dy'
+                    title: 'dy',
                 }, {
                     field: 'size',
-                    title: 'size'
+                    title: 'size',
                 }, {
                     field: 'bzq',
                     title: 'bzq'
@@ -297,11 +322,13 @@
                     title: '操作',
                     align: 'center',
                     clickToSelect: false,
+                    class: 'min-width-100',
                     events: window.operateEvents,
                     formatter: operateFormatter
                 }
             ]
         })
+        $('#table').bootstrapTable('hideColumn',['imgs','size','replace','description','bzq','id']);
     </script>
 @stop
 

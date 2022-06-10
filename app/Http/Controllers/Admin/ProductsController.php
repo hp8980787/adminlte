@@ -69,12 +69,14 @@ class ProductsController extends Controller
         $fillable = $this->product->getFillable();
         $data = $request->only($fillable);
         $coverImg = Storage::disk('images')->put('product', $request->file('cover_img'));
-        $data['cover_img'] = $coverImg;
+        $coverImgUrl = Storage::disk('images')->url($coverImg);
+
+        $data['cover_img'] = $coverImgUrl;
         if ($request->file('ifMultiple')) {
             $imgs = [];
             foreach ($request->ifMultiple as $file) {
 
-                $file= Storage::disk('images')->put('product', $file);
+                $file = Storage::disk('images')->put('product', $file);
 
                 $imgs[] = Storage::disk('images')->url($file);
             }
