@@ -30,24 +30,34 @@ class EventServiceProvider extends ServiceProvider
     {
         Event::listen(BuildingMenu::class, function (BuildingMenu $event) {
             $event->menu->add(
-                [ 'text' => '商品信息', 'url' => route('admin.products.index'), ]
+                [
+                    'text' => '商品信息', 'url' => adminRoute('products.index'),
+                    'icon' => 'fab fa-product-hunt',
+                    'label_color' => 'success',
+                ],
+                ['text' => '采购', 'icon' => 'fa fa-shopping-cart',
+                    'submenu' => [
+                        ['text' => '采购', 'url' => adminRoute('purchase.index'), 'icon' => 'fa fa-shopping-cart'],
+                        ['text' => '供应商', 'url' => '', 'icon' => 'fas fa-truck'],
+                    ]],
+
             );
-            $event->menu->addAfter('pages', [
-                'key' => 'account_settings',
-                'header' => 'Account Settings',
-            ]);
-
-            $event->menu->addIn('account_settings', [
-                'key' => 'account_settings_notifications',
-                'text' => 'Notifications',
-                'url' => 'account/edit/notifications',
-            ]);
-
-            $event->menu->addBefore('account_settings_notifications', [
-                'key' => 'account_settings_profile',
-                'text' => 'Profile',
-                'url' => 'account/edit/profile',
-            ]);
+//            $event->menu->addAfter('pages', [
+//                'key' => 'account_settings',
+//                'header' => 'Account Settings',
+//            ]);
+//
+//            $event->menu->addIn('account_settings', [
+//                'key' => 'account_settings_notifications',
+//                'text' => 'Notifications',
+//                'url' => 'account/edit/notifications',
+//            ]);
+//
+//            $event->menu->addBefore('account_settings_notifications', [
+//                'key' => 'account_settings_profile',
+//                'text' => 'Profile',
+//                'url' => 'account/edit/profile',
+//            ]);
         });
     }
 }

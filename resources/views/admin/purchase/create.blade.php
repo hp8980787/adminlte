@@ -3,127 +3,57 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>商品信息</h1>
+    <h1>新增采购订单</h1>
 @stop
 
 @section('content')
 
-    <div class="row">
-        {{-- Themed --}}
-        <x-adminlte-modal id="modalPurple" title="添加商品" theme="purple" icon="fas fa-bolt" size='lg' disable-animations>
+    <div class="container">
+        <div class="row " style="display: block">
+            <x-adminlte-card title="Form Card" theme="info" theme-mode="info"
+                             class="elevation-3" body-class="bg-grey" header-class="bg-info"
+                             footer-class="bg-info border-top rounded border-light"
+                             icon="fas fa-lg fa-bell" collapsible removable maximizable >
+                <x-slot name="toolsSlot">
+                    @php
+                        $config = [
+                            'format' => 'YYYY-MM-DD HH.mm',
+                            'dayViewHeaderFormat' => 'MMM YYYY',
+                            'minDate' => "js:moment().startOf('month')",
+                            'maxDate' => "js:moment().endOf('month')",
+                            'daysOfWeekDisabled' => [0, 6],
+                        ];
+                    @endphp
+                    <x-adminlte-input-date name="idSizeSm" label="采购截止时间" igroup-size="sm"
+                                           :config="$config" placeholder="Choose a working day...">
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text bg-dark">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input-date>
+                </x-slot>
+                <div style="display: flex;flex-direction: row;">
+                    <x-adminlte-input  fgroup-class="col-md-6" label="title" name="title" required placeholder="请填写title"></x-adminlte-input>
 
-            <form action="{{ adminRoute('products.store')}}" method="post" enctype="multipart/form-data">
-                @csrf
-                {{-- With prepend slot --}}
-                <x-adminlte-input value="{{ old('name') }}" name="name" label="name(jianjie1) 必须" placeholder="name"
-                                  required="required"
-                                  label-class="text-lightblue">
-                </x-adminlte-input>
+                    <x-adminlte-select  fgroup-class="col-md-6" name="supplier" label="供应商">
+                        <option value="1">aa公司</option>
+                        <option value="2">b公司</option>
+                        <option value="3">c公司</option>
+                        <option value="add">创建</option>
+                    </x-adminlte-select>
+                </div>
+                <x-adminlte-textarea label="备注" name="remark" ></x-adminlte-textarea>
 
-                {{-- With append slot, number type and sm size --}}
-                <x-adminlte-input value="{{ old('sku') }}" name="sku" label="Sku(必须)" placeholder="sku" type="text">
-                    <x-slot name="appendSlot">
-                        <x-adminlte-button onClick="generateSku()" theme="success" label="生成"/>
-                    </x-slot>
-                </x-adminlte-input>
 
-                <x-adminlte-input value="{{ old('category') }}" name="category" label="分类(必须)" required="required"
-                                  placeholder="分类"
-                                  label-class="text-lightblue">
-                </x-adminlte-input>
 
-                <x-adminlte-input value="{{ old('brand') }}" name="brand" label="brand(必须)" required="required"
-                                  placeholder="分类"
-                                  label-class="text-lightblue">
-                </x-adminlte-input>
-
-                <x-adminlte-input-file name="cover_img" label="封面图(必须)" placeholder="Choose a file..."
-                                       disable-feedback/>
-                <x-adminlte-input-file id="ifMultiple" name="ifMultiple[]" label="多图(必须)"
-                                       placeholder="Choose multiple files..." igroup-size="lg" legend="Choose" multiple>
-                    <x-slot name="appendSlot">
-                        <x-adminlte-button theme="primary" label="Upload"/>
-                    </x-slot>
-                    <x-slot name="prependSlot">
-                        <div class="input-group-text text-primary">
-                            <i class="fas fa-file-upload"></i>
-                        </div>
-                    </x-slot>
-                </x-adminlte-input-file>
-
-                <x-adminlte-input value="{{ old('dl') }}" name="dl" label="dl(必须)" required="required" placeholder="dl"
-                                  label-class="text-lightblue">
-                </x-adminlte-input>
-                <x-adminlte-input value="{{ old('dy') }}" name="dy" label="dy(必须)" required="required" placeholder="dy"
-                                  label-class="text-lightblue">
-                </x-adminlte-input>
-
-                <x-adminlte-input value="{{ old('size') }}" name="size" label="size" placeholder="size"
-                                  label-class="text-lightblue">
-                </x-adminlte-input>
-
-                <x-adminlte-input value="{{ old('bzq') }}" name="bzq" label="bzq" placeholder="bzq"
-                                  label-class="text-lightblue">
-                </x-adminlte-input>
-
-                <x-adminlte-input value="{{ old('price_eu') }}" name="price_eu" label="欧元价格" placeholder="欧元价格"
-                                  label-class="text-lightblue">
-                    <x-slot name="prependSlot">
-                        <div class="input-group-text">
-                            <i class="fas fa-euro-sign"></i>
-                        </div>
-                    </x-slot>
-                </x-adminlte-input>
-                <x-adminlte-input value="{{ old('price_us') }}" name="price_us" label="美元价格" placeholder="美元价格"
-                                  label-class="text-lightblue">
-                    <x-slot name="prependSlot">
-                        <div class="input-group-text">
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                    </x-slot>
-                </x-adminlte-input>
-
-                <x-adminlte-input value="{{ old('price_uk') }}" name="price_uk" label="英镑价格" placeholder="英镑价格"
-                                  label-class="text-lightblue">
-                    <x-slot name="prependSlot">
-                        <div class="input-group-text">
-                            <i class="fas fa-pound-sign"></i>
-                        </div>
-                    </x-slot>
-                </x-adminlte-input>
-
-                <x-adminlte-input value="{{ old('price_jp') }}" name="price_jp" label="日元价格" placeholder="日元价格"
-                                  label-class="text-lightblue">
-                    <x-slot name="prependSlot">
-                        <div class="input-group-text">
-                            <i class="fas fa-yen-sign"></i>
-                        </div>
-                    </x-slot>
-                </x-adminlte-input>
-
-                <x-adminlte-input value="{{ old('stock') }}" name="stock" type="number" min="0" label="库存">
-                </x-adminlte-input>
-                <x-adminlte-textarea value="{{ old('replace') }}" name="replace" label="替换品(必须)" placholder="用空格分割"
-                                     required="required"
-                                     label-class="text-lightblue">
-                </x-adminlte-textarea>
-                <x-adminlte-text-editor name="description" label="描述(必须)">
-                    {{ old('description') }}
-                </x-adminlte-text-editor>
-
-                <x-adminlte-button type="submit" label="提交" theme="success"/>
-            </form>
-        </x-adminlte-modal>
-
-        {{-- Example button to open modal --}}
-        <x-adminlte-button label="添加商品" data-toggle="modal" data-target="#modalPurple" class="bg-purple"/>
-
-    </div>
-    <div class="row mt-3">
-        <div class="table-responsive">
-            <table data-height="800" data-show-columns="true" id="table">
-            </table>
+                <x-slot name="footerSlot">
+                    <x-adminlte-button class="d-flex ml-auto" theme="light" label="submit"
+                                       icon="fas fa-sign-in"/>
+                </x-slot>
+            </x-adminlte-card>
         </div>
+
     </div>
 
 @stop
@@ -164,6 +94,7 @@
                 params.success(res.data)
             })
         }
+
         function operateFormatter(value, row, index) {
             return [
                 '<a class="edit" href="javascript:void(0)" title="edit">',
@@ -210,12 +141,12 @@
             }
         }
 
-        function imgsFormatter(value,row,index) {
+        function imgsFormatter(value, row, index) {
             return "<a>点击查看</a>"
         }
 
-        function imgFormatter(value,row,index) {
-        return `<img width="100px" src="/${value}">`;
+        function imgFormatter(value, row, index) {
+            return `<img width="100px" src="/${value}">`;
         }
 
         $('#table').bootstrapTable({
@@ -242,7 +173,7 @@
 
             showHeader: true,
             // showColumns: true,
-            hideColumn:['sku'],
+            hideColumn: ['sku'],
             showRefresh: true,
             pagination: true,//分页
             sidePagination: 'server',//服务器端分页
@@ -273,7 +204,7 @@
                     field: 'cover_img',
                     title: '封面图',
                     class: 'min-width-100',
-                    formatter:imgFormatter,
+                    formatter: imgFormatter,
 
                 }, {
                     field: 'imgs',
@@ -327,10 +258,11 @@
                 }
             ]
         })
-        $('#table').bootstrapTable('hideColumn',['imgs','size','replace','description','bzq','id']);
+        $('#table').bootstrapTable('hideColumn', ['imgs', 'size', 'replace', 'description', 'bzq', 'id']);
     </script>
 @stop
 
 @section('plugins.BsCustomFileInput', true)
-@section('plugins.Summernote', true)
-@section('plugins.Sweetalert2', true);
+@section('plugins.TempusDominusBs4', true)
+{{--@section('plugins.Summernote', true)--}}
+{{--@section('plugins.Sweetalert2', true);--}}
