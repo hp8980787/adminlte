@@ -164,6 +164,7 @@
                 params.success(res.data)
             })
         }
+
         function operateFormatter(value, row, index) {
             return [
                 '<a class="edit" href="javascript:void(0)" title="edit">',
@@ -210,12 +211,12 @@
             }
         }
 
-        function imgsFormatter(value,row,index) {
+        function imgsFormatter(value, row, index) {
             return "<a>点击查看</a>"
         }
 
-        function imgFormatter(value,row,index) {
-        return `<img width="100px" src="/${value}">`;
+        function imgFormatter(value, row, index) {
+            return `<img width="100px" src="/${value}">`;
         }
 
         $('#table').bootstrapTable({
@@ -242,7 +243,7 @@
 
             showHeader: true,
             // showColumns: true,
-            hideColumn:['sku'],
+            hideColumn: ['sku'],
             showRefresh: true,
             pagination: true,//分页
             sidePagination: 'server',//服务器端分页
@@ -273,7 +274,7 @@
                     field: 'cover_img',
                     title: '封面图',
                     class: 'min-width-100',
-                    formatter:imgFormatter,
+                    formatter: imgFormatter,
 
                 }, {
                     field: 'imgs',
@@ -327,7 +328,7 @@
                 }
             ]
         })
-        $('#table').bootstrapTable('hideColumn',['imgs','size','replace','description','bzq','id']);
+        $('#table').bootstrapTable('hideColumn', ['imgs', 'size', 'replace', 'description', 'bzq', 'id']);
     </script>
 @stop
 

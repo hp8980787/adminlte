@@ -30,7 +30,7 @@ class CreateAdminProductsTable extends Migration
             $table->decimal('price_us',10,2)->nullable();
             $table->decimal('price_uk',10,2)->nullable();
             $table->decimal('price_jp',10,2)->nullable();
-            $table->unsignedTinyInteger('status')->default(0);
+            $table->unsignedTinyInteger('status')->default(1);
             $table->string('replace')->comment('替代商品');
             $table->text('description')->comment('comp');
             $table->unsignedInteger('stock')->default(0);
@@ -47,5 +47,5 @@ class CreateAdminProductsTable extends Migration
     {
         Schema::dropIfExists('admin_products');
     }
-    
+
 }
