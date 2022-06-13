@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\PurchaseRequest;
 use Illuminate\Http\Request;
 
 class PurchaseController extends Controller
@@ -33,9 +34,15 @@ class PurchaseController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PurchaseRequest $request)
     {
-        //
+        $purchaseData = [];
+        $purchaseData['user_id'] = 1;
+        $purchaseData['deadline_at']= $request->get('deadline_at');
+        $purchaseData['remark'] = $request->get('remark');
+        $purchaseData['supplier_id'] = $request->get('supplier_id');
+        
+        dd($request->all());
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Http\Resources\ProductCollection;
 use App\Models\Product;
 use App\Utils\Admin\UploadFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -145,5 +146,27 @@ class ProductsController extends Controller
         Product::query()->where('id', $id)->delete();
 
         return response('删除成功！', 200);
+    }
+
+    public function page(Request $request)
+    {
+
+
+        $query = $this->product->select('id', DB::raw('sku as text'));
+        if ($request->search) {
+            $search = $request->search;
+            $query->where('name', 'like', "%$search%")
+                ->orWhere('category', 'like', "%$search%")
+                ->orWhere('replace', 'like', "%$search%")
+                ->orWhere('description', 'like', "%$search%")
+                ->orWhere('sku', 'like', "%$search%");
+        }
+        $products = $query->limit(15)->get();
+
+        $data['results'] = $products;
+        $data['pagination'] = [
+            'more' => false,
+        ];
+        return response($data);
     }
 }

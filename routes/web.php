@@ -23,6 +23,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::name('admin.')->prefix('admin')->group(function (){
     Route::get('dashboard',[\App\Http\Controllers\Admin\DashboardController::class,'index'])->name('dashboard');
+    Route::get('products/pagination',[\App\Http\Controllers\Admin\ProductsController::class,'page'])->name('products.pagination');
     Route::resource('products',\App\Http\Controllers\Admin\ProductsController::class)->parameter('products','id');
     Route::get('generate/sku',[\App\Http\Controllers\Admin\HelpersController::class,'sku'])->name('sku');
     Route::resource('purchase',\App\Http\Controllers\Admin\PurchaseController::class)->parameter('purchase','id');
