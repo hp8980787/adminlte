@@ -7,13 +7,15 @@ use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\UserCollection;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     public function index(UserRequest $request)
     {
+
         if ($request->ajax()) {
-            $query = User::query();
+            $query = User::query()->with('roles');
             if ($request->search) {
                 $search = $request->search;
                 $query->where('name', 'like', "%$search%")

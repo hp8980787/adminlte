@@ -32,7 +32,7 @@
         @else
             @include('adminlte::partials.cwrapper.cwrapper-iframe')
         @endempty
-        @include('sweetalert::alert')
+
         {{-- Footer --}}
         @hasSection('footer')
             @include('adminlte::partials.footer.footer')

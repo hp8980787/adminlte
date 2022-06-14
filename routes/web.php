@@ -29,7 +29,10 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::get('generate/sku', [\App\Http\Controllers\Admin\HelpersController::class, 'sku'])->name('sku');
         Route::resource('purchase', \App\Http\Controllers\Admin\PurchaseController::class)->parameter('purchase', 'id');
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->parameter('users', 'id');
-        Route::resource('roles',\App\Http\Controllers\Admin\RoleController::class)->parameter('roles','id');
+        Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class)->parameter('roles', 'id');
+        Route::get('roles-all',[\App\Http\Controllers\Admin\RoleController::class,'all'])->name('roles.all');
+        Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class)->parameter('permissions', 'id');
+        Route::get('assign-role', [\App\Http\Controllers\Admin\UserController::class, 'assignRole'])->name('user.assign-role');
     });
 
 });

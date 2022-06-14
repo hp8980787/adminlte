@@ -334,4 +334,4 @@
 
 @section('plugins.BsCustomFileInput', true)
 @section('plugins.Summernote', true)
-@section('plugins.Sweetalert2', true);
+@section('plugins.Sweetalert2', true)

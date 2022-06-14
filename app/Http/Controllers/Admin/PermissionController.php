@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
-class RoleController extends Controller
+class PermissionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,14 +16,17 @@ class RoleController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-
-            $roles = Role::query()->paginate();
-            $array = $roles->toArray();
-            $data = responseTable($array, $roles, 'roles.edit', 'roles.destroy');
-            return response()->json($data);
+            $query = Permission::query();
+            if ($request->search) {
+                $search = $request->search;
+                $query->where('name', 'like', "%$search%");
+            }
+            $perPage = $request->perPage ?: 20;
+            $permissions = $query->paginate($perPage);
+            return response()->json(responseTable($permissions->toArray(), $permissions, 'permissions.edit', 'permissions.destroy'));
         }
 
-        return view('admin.roles.index');
+        return view('admin.permissions.index');
     }
 
     /**
@@ -44,11 +47,10 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        Role::query()->create([
-            'name' => $request->name,
+        Permission::query()->create([
+            'name' => $request->name
         ]);
-
-        return redirect(adminRoute('roles.index'))->with('toast_success', '新增成功!');
+        return redirect(adminRoute('permissions.index'))->with('toast_success', '成功！');
     }
 
     /**
@@ -70,9 +72,8 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        $role = Role::query()->findOrFail($id);
-
-        return view('admin.roles.edit', compact('role'));
+        $permission = Permission::query()->findOrFail($id);
+        return view('admin.permissions.edit',compact('permission'));
     }
 
     /**
@@ -84,10 +85,9 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Role::query()->where('id', $id)->update([
-            'name' => $request->name,
-        ]);
-        return redirect(adminRoute('roles.index'))->with('toast_success', '修改成功！');
+        $data = $request->only('name', 'web_guard');
+        Permission::query()->where('id', $id)->update($data);
+        return redirect(adminRoute('permissions.index'))->with('toast_success', '成功!');
     }
 
     /**
@@ -98,13 +98,7 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        Role::query()->where('id', $id)->delete();
-        return response('删除成功!');
-    }
-
-    public function all()
-    {
-        $roles = Role::query()->get()->pluck('name', 'id');
-        return response()->json($roles);
+        Permission::query()->where('id', $id)->delete();
+        return response('success');
     }
 }

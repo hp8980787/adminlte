@@ -241,7 +241,6 @@ return [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
         ],
-
         [
             'text'        => 'pages',
             'url'         => 'admin/pages',
@@ -260,8 +259,6 @@ return [
             'url'  => 'admin/settings',
             'icon' => 'fas fa-fw fa-lock',
         ],
-
-
 
     ],
 
@@ -467,6 +464,21 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => 'vendor/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css',
+                ],
+            ],
+        ],
+        'Listbox' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/listbox/jquery.bootstrap-duallistbox.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/listbox/bootstrap-duallistbox.css',
                 ],
             ],
         ],

@@ -7,11 +7,28 @@
 @stop
 
 @section('content')
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <table id="table"></table>
+            </div>
+        </div>
+        <div class="row">
+            <x-adminlte-modal id="modalCustom" title="分配角色" size="lg" theme="teal"
+                              icon="fas fa-users" v-centered static-backdrop scrollable>
+                <div>
+                    <input type="hidden" value="" name="user_id">
+                    <select multiple="multiple" size="10" name="duallistbox_demo1[]">
 
-    <div class="row ml-3">
-            <table id="table"></table>
+                    </select>
+                </div>
+                <x-slot name="footerSlot">
+
+                    <x-adminlte-button theme="danger" label="Dismiss" data-dismiss="modal"/>
+                </x-slot>
+            </x-adminlte-modal>
+        </div>
     </div>
-
 @stop
 
 @section('css')
@@ -37,6 +54,8 @@
     <script>
 
 
+
+
         function operateFormatter(value, row, index) {
             return [
                 '<a class="edit" href="javascript:void(0)" title="edit">',
@@ -44,7 +63,10 @@
                 '</a>  ',
                 '<a class="remove" href="javascript:void(0)" title="Remove">',
                 '<i class="fa fa-trash"></i>',
-                '</a>'
+                '</a>',
+                '<a class="roles"   data-toggle="modal" data-target="#modalCustom"  href="javascript:;" title="roles">',
+                '<i class="fas fa-users"></i>',
+                '</a>',
             ].join('')
         }
 
@@ -80,6 +102,34 @@
 
                     }
                 })
+            },
+            'click .roles': function (e, value, row, index) {
+                let id= row.id
+                let roles = row.roles;
+                $("input[name='user_id']").val(id)
+                $.ajax({
+                    url:"{{ adminRoute('roles.all') }}",
+                    method:'get',
+                    success:(response)=>{
+                        let options='';
+                        for(let i in response){
+                            if(roles.indexOf(response[i])!=-1){
+                                options+=`<option value="${i}" selected>${response[i]}</option>`
+                            }else {
+                                options+=`<option value="${i}">${response[i]}</option>`
+                            }
+                        }
+                        $('select[name="duallistbox_demo1[]"]').append(options)
+                        var dualListContainer = $('select[name="duallistbox_demo1[]"]').bootstrapDualListbox({
+                            filterTextClear:'角色',
+                            moveAllLabel:'移动所有',
+                            iconsPrefix:'fas',
+                            iconMove:'fa-user'
+                        });
+
+                    }
+                })
+
             }
         }
 
@@ -113,7 +163,6 @@
 
                 };
             },
-
             showHeader: true,
             // showColumns: true,
             hideColumn: ['sku'],
@@ -121,7 +170,7 @@
             pagination: true,//分页
             sidePagination: 'server',//服务器端分页
             pageNumber: 1,
-            pageList: [ 10, 20, 50, 100],//分页步进值
+            pageList: [10, 20, 50, 100],//分页步进值
             search: true,//显示搜索框
             columns: [
                 {
@@ -136,7 +185,7 @@
                 }, {
                     field: 'email',
                     title: '邮箱'
-                },{
+                }, {
                     field: 'roles',
                     title: '角色'
                 }, {
@@ -153,10 +202,11 @@
                 }
             ]
         })
-        $('#table').bootstrapTable('hideColumn', ['imgs', 'size', 'replace', 'description', 'bzq', 'id']);
+
     </script>
 @stop
 
 @section('plugins.BsCustomFileInput', true)
 @section('plugins.Summernote', true)
-@section('plugins.Sweetalert2', true);
+@section('plugins.Sweetalert2', true)
+@section('plugins.Listbox',true)

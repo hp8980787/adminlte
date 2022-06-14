@@ -8,11 +8,13 @@ use App\Http\Resources\ProductCollection;
 use App\Models\Product;
 use App\Utils\Admin\UploadFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use RealRashid\SweetAlert\Facades\Alert;
+use Spatie\Permission\Models\Role;
 
 class ProductsController extends Controller
 {
@@ -30,6 +32,11 @@ class ProductsController extends Controller
      */
     public function index(ProductRequest $request)
     {
+//        $user = Auth::user();
+//        $role= Role::query()->find(1);
+//        $role->givePermissionTo([1]);
+//        $user->assignRole('admin');
+//        dd($user->hasPermissionTo('products.index'));
 
         if ($request->ajax()) {
             $perPage = $request->perPage ?: 20;

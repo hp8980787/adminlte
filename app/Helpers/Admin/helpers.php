@@ -12,7 +12,7 @@ if (!function_exists('responseTable')) {
     {
         foreach ($data['data'] as $k => $val) {
             $val['editUrl'] = adminRoute($editUrl, $val['id']);
-            $val['delUrl'] = adminRoute($editUrl, $val['id']);
+            $val['delUrl'] = adminRoute($delUrl, $val['id']);
             $data['data'][$k] = $val;
         }
         $data = [

@@ -80,6 +80,7 @@
                 window.location.href = row['editUrl'];
             },
             'click .remove': function (e, value, row, index) {
+                console.log(row.delUrl)
                 const delUrl = row['delUrl'];
                 Swal.fire({
                     title: '是否删除?',
@@ -171,4 +172,4 @@
 
 @section('plugins.BsCustomFileInput', true)
 @section('plugins.Summernote', true)
-@section('plugins.Sweetalert2', true);
+@section('plugins.Sweetalert2', true)

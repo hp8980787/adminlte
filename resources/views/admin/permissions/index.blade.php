@@ -3,14 +3,41 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>用户</h1>
+    <h1>角色</h1>
 @stop
 
 @section('content')
+    <div class="container">
+        <div class="row ml-3">
+            <div class="col-md-12">
+                <x-adminlte-button label="添加权限" theme="info" data-toggle="modal"
+                                   data-target="#modalCreate"></x-adminlte-button>
+            </div>
+            <table id="table"></table>
+        </div>
+        <div class="row">
+            <form action="{{ adminRoute('permissions.store') }}" method="post">
+                <x-adminlte-modal id="modalCreate" title="添加权限" size="lg" theme="teal"
+                                  icon="fas fa-bell" v-centered static-backdrop >
+                    <div class="body">
 
-    <div class="row ml-3">
-        <table id="table"></table>
+                        @csrf
+                        <x-adminlte-input label="name" name="name" required></x-adminlte-input>
+                        <x-adminlte-input  value="web" type="hidden" name="guard_name" required>
+                        </x-adminlte-input>
+
+                    </div>
+                    <x-slot name="footerSlot">
+                        <x-adminlte-button class="mr-auto" type="submit" theme="success" label="submit"/>
+
+                    </x-slot>
+                </x-adminlte-modal>
+            </form>
+        </div>
+
+
     </div>
+
 
 @stop
 
@@ -44,7 +71,8 @@
                 '</a>  ',
                 '<a class="remove" href="javascript:void(0)" title="Remove">',
                 '<i class="fa fa-trash"></i>',
-                '</a>'
+                '</a>',
+
             ].join('')
         }
 
@@ -53,6 +81,7 @@
                 window.location.href = row['editUrl'];
             },
             'click .remove': function (e, value, row, index) {
+                console.log(row.delUrl)
                 const delUrl = row['delUrl'];
                 Swal.fire({
                     title: '是否删除?',
@@ -83,23 +112,14 @@
             }
         }
 
-        function imgsFormatter(value, row, index) {
-            return "<a>点击查看</a>"
-        }
-
-        function imgFormatter(value, row, index) {
-            return `<img width="100px" src="/${value}">`;
-        }
-
         $('#table').bootstrapTable({
             ajax: function (params) {
-                var url = "{{ adminRoute('users.index') }}"
+                var url = "{{ adminRoute('permissions.index') }}"
                 $.get(url + '?' + $.param(params.data)).then(function (res) {
                     const data = res.data;
                     data['total'] = res.meta.total;
                     data['totalNotFiltered'] = res.meta.total;
                     params.success(data)
-
                 })
             },
             queryParamsType: '',
@@ -110,19 +130,16 @@
                     order: params.order, //排序
                     ordername: params.sort, //排序
                     page: params.pageNumber,
-
                 };
             },
-
             showHeader: true,
             // showColumns: true,
-            hideColumn: ['sku'],
             showRefresh: true,
             pagination: true,//分页
             sidePagination: 'server',//服务器端分页
             pageNumber: 1,
-            pageList: [ 10, 20, 50, 100],//分页步进值
-            search: true,//显示搜索框
+            pageList: [10, 20, 50, 100],//分页步进值
+            search: false,//显示搜索框
             columns: [
                 {
                     checkbox: true
@@ -134,14 +151,8 @@
                     field: 'name',
                     title: 'name',
                 }, {
-                    field: 'email',
-                    title: '邮箱'
-                },{
-                    field: 'roles',
-                    title: '角色'
-                }, {
-                    field: 'created_at',
-                    title: '创建时间'
+                    field: 'guard_name',
+                    title: 'guard_name'
                 }, {
                     field: 'operate',
                     title: '操作',
@@ -153,10 +164,10 @@
                 }
             ]
         })
-        $('#table').bootstrapTable('hideColumn', ['imgs', 'size', 'replace', 'description', 'bzq', 'id']);
+
     </script>
 @stop
 
 @section('plugins.BsCustomFileInput', true)
 @section('plugins.Summernote', true)
-@section('plugins.Sweetalert2', true);
+@section('plugins.Sweetalert2', true)

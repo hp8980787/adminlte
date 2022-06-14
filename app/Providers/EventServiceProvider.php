@@ -30,11 +30,12 @@ class EventServiceProvider extends ServiceProvider
     {
         Event::listen(BuildingMenu::class, function (BuildingMenu $event) {
             $event->menu->add(
+                ['text' => '菜单', 'icon' => 'fas fa-bars', 'url' => '1'],
                 [
                     'text' => '权限管理', 'icon' => 'fas fa-key', 'submenu' => [
                     ['text' => '角色', 'url' => adminRoute('roles.index'), 'icon' => 'fas fa-user-tag'],
-                    ['text' => '权限', 'icon' => 'fas fa-key','url'=>'1'],
-                    ['text' => '菜单', 'icon' => 'fas fa-bars','url'=>'1'],
+                    ['text' => '权限', 'icon' => 'fas fa-key', 'url' => adminRoute('permissions.index')],
+
                 ]
                 ],
                 [
