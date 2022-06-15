@@ -17,7 +17,7 @@ class RoleController extends Controller
     {
         if ($request->ajax()) {
 
-            $roles = Role::query()->paginate();
+            $roles = Role::query()->with('permissions')->paginate();
             $array = $roles->toArray();
             $data = responseTable($array, $roles, 'roles.edit', 'roles.destroy');
             return response()->json($data);
@@ -106,5 +106,13 @@ class RoleController extends Controller
     {
         $roles = Role::query()->get()->pluck('name', 'id');
         return response()->json($roles);
+    }
+
+    public function assignPermissions(Request $request)
+    {
+        $role = Role::query()->findOrFail($request->role_id);
+        $role->syncPermissions($request->permissions);
+        return response('success');
+
     }
 }

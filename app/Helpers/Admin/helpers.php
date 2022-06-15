@@ -3,7 +3,7 @@ if (!function_exists('adminRoute')) {
     function adminRoute($router,  $array = null): string
     {
 
-        return route('admin.' . $router, $array);
+        return route($router, $array);
     }
 }
 

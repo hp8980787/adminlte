@@ -18,13 +18,12 @@
                               icon="fas fa-users" v-centered static-backdrop scrollable>
                 <div>
                     <input type="hidden" value="" name="user_id">
-                    <select multiple="multiple" size="10" name="duallistbox_demo1[]">
+                    <select multiple="multiple" size="10" name="roles[]">
 
                     </select>
                 </div>
                 <x-slot name="footerSlot">
-
-                    <x-adminlte-button theme="danger" label="Dismiss" data-dismiss="modal"/>
+                    <x-adminlte-button theme="info" onclick="rolesSubmit()" label="submit" data-dismiss="modal"/>
                 </x-slot>
             </x-adminlte-modal>
         </div>
@@ -53,7 +52,31 @@
 
     <script>
 
+        function rolesSubmit() {
+            const user_id = $('input[name="user_id"]').val();
+            const roles = $('select[name="roles[]"]').val();
+            $.ajax({
+                url: "{{ adminRoute('users.assign-roles') }}",
+                method: 'put',
+                data: {
+                    user_id:user_id,
+                    roles:roles
+                },
+                success:(response)=>{
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: '分配成功',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    setInterval(function (){
+                        window.location.href="{{ adminRoute('users.index') }}"
+                    },1000)
 
+                }
+            })
+        }
 
 
         function operateFormatter(value, row, index) {
@@ -104,29 +127,31 @@
                 })
             },
             'click .roles': function (e, value, row, index) {
-                let id= row.id
+                let id = row.id
                 let roles = row.roles;
                 $("input[name='user_id']").val(id)
                 $.ajax({
-                    url:"{{ adminRoute('roles.all') }}",
-                    method:'get',
-                    success:(response)=>{
-                        let options='';
-                        for(let i in response){
-                            if(roles.indexOf(response[i])!=-1){
-                                options+=`<option value="${i}" selected>${response[i]}</option>`
-                            }else {
-                                options+=`<option value="${i}">${response[i]}</option>`
+                    url: "{{ adminRoute('roles.all') }}",
+                    method: 'get',
+                    success: (response) => {
+                        let options = '';
+                        for (let i in response) {
+                            console.log(roles.indexOf(response[i]));
+                            if (roles.indexOf(response[i]) != -1) {
+                                options += `<option value="${i}" selected>${response[i]}</option>`
+                            } else {
+                                options += `<option value="${i}">${response[i]}</option>`
                             }
                         }
-                        $('select[name="duallistbox_demo1[]"]').append(options)
-                        var dualListContainer = $('select[name="duallistbox_demo1[]"]').bootstrapDualListbox({
-                            filterTextClear:'角色',
-                            moveAllLabel:'移动所有',
-                            iconsPrefix:'fas',
-                            iconMove:'fa-user'
+                        $('select[name="roles[]"]').html(options)
+                        var dualListContainer = $('select[name="roles[]"]')
+                        dualListContainer.bootstrapDualListbox({
+                            filterTextClear: '角色',
+                            moveAllLabel: '移动所有',
+                            iconsPrefix: 'fas',
+                            iconMove: 'fa-user'
                         });
-
+                        dualListContainer.bootstrapDualListbox('refresh')
                     }
                 })
 

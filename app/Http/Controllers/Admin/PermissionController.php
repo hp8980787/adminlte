@@ -29,15 +29,7 @@ class PermissionController extends Controller
         return view('admin.permissions.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -53,16 +45,6 @@ class PermissionController extends Controller
         return redirect(adminRoute('permissions.index'))->with('toast_success', '成功！');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -73,7 +55,8 @@ class PermissionController extends Controller
     public function edit($id)
     {
         $permission = Permission::query()->findOrFail($id);
-        return view('admin.permissions.edit',compact('permission'));
+
+        return view('admin.permissions.edit', compact('permission'));
     }
 
     /**
@@ -100,5 +83,11 @@ class PermissionController extends Controller
     {
         Permission::query()->where('id', $id)->delete();
         return response('success');
+    }
+
+    public function all()
+    {
+        $permissions = Permission::query()->get()->pluck('name', 'id');
+        return response()->json($permissions);
     }
 }

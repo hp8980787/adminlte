@@ -19,9 +19,9 @@ class UserController extends Controller
             if ($request->search) {
                 $search = $request->search;
                 $query->where('name', 'like', "%$search%")
-                    ->orWhere('email','like',"%$search%");
-           }
-            $perPage = $request->perPage?:20;
+                    ->orWhere('email', 'like', "%$search%");
+            }
+            $perPage = $request->perPage ?: 20;
             $users = $query->paginate($perPage);
 
             return response()->json(new UserCollection($users));
@@ -42,6 +42,16 @@ class UserController extends Controller
     public function destroy()
     {
 
+    }
+
+    public function assignRoles(Request $request)
+    {
+
+        $id = $request->user_id;
+        $roles = $request->roles;
+        $user = User::query()->findOrFail($id);
+        $user->syncRoles($roles);
+        return response('success');
     }
 
 }
