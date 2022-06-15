@@ -18,22 +18,16 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
-        $user =$request->user();
-        if ($user->hasRole(['admin','superAdmin'])){
+        $user = $request->user();
+        if ($user->hasRole(['admin', 'superAdmin'])) {
             return $next($request);
         }
-        $action =$request->route()->action;
+        $action = $request->route()->action;
         $name = $action['as'];
-//        dd($name=='dashboard');
-        $role = Role::query()->findOrFail(2);
-//        dd($role->permissions);
-//        dd($user->hasPermissionTo($name));
-
-        if ($user->hasPermissionTo($name)){
+        if ($user->hasPermissionTo($name)) {
             return $next($request);
         }
-        return $next($request);
+
         abort(403);
     }
 }

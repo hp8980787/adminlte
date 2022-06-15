@@ -19,7 +19,7 @@ class DashboardController extends Controller
     {
 
         $g = new GeneratePermissions();
-        $g->routePermissionsToDatabases();
+//        $g->routePermissionsToDatabases();
 
         return view('admin.dashboard.index');
     }

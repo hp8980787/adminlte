@@ -50,4 +50,6 @@ class GeneratePermissions
         }, config('routePermissions'));
         Permission::query()->insert($data);
     }
+
+
 }
