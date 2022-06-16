@@ -12,6 +12,12 @@
             <x-adminlte-button label="创建" theme="primary" icon="fas fa-plus"/>
         </a>
     </div>
+    <div class="container">
+        <div class="row">
+            <table id="table"></table>
+        </div>
+    </div>
+
 
 @stop
 
@@ -26,14 +32,11 @@
         }
     </style>
 
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css">
-
 @stop
 
 @section('js')
 
-    <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
-    <script src="/bootstrap-table-zh-CN.js"></script>
+
 
     <script>
         function generateSku() {
@@ -108,13 +111,13 @@
 
         $('#table').bootstrapTable({
             ajax: function (params) {
-                var url = "{{ adminRoute('products.index') }}"
+                var url = "{{ adminRoute('purchase.index') }}"
                 $.get(url + '?' + $.param(params.data)).then(function (res) {
+                    console.log(res)
                     const data = res.data;
-                    data['total'] = res.meta.total;
-                    data['totalNotFiltered'] = res.meta.total;
+                    data['total'] = res.total;
+                    data['totalNotFiltered'] = res.total;
                     params.success(data)
-
                 })
             },
             queryParamsType: '',
@@ -129,7 +132,7 @@
             },
 
             showHeader: true,
-            // showColumns: true,
+            showColumns: true,
             hideColumn: ['sku'],
             showRefresh: true,
             pagination: true,//分页
@@ -145,66 +148,20 @@
                     field: 'id',
                     title: 'id',
                 }, {
-                    field: 'sku',
-                    title: 'sku',
+                    field: 'remark',
+                    title: '留言',
                     class: 'min-width-200'
                 }, {
-                    field: 'name',
-                    title: 'name(jianjie1)',
-                }, {
-                    field: 'category',
-                    title: '分类',
-                }, {
-                    field: 'brand',
-                    title: '品牌',
-                }, {
-                    field: 'cover_img',
-                    title: '封面图',
-                    class: 'min-width-100',
-                    formatter: imgFormatter,
-
-                }, {
-                    field: 'imgs',
-                    title: '多图',
-                    cardVisible: false,
-                    formatter: imgsFormatter
-                }, {
-                    field: 'dl',
-                    title: 'dl',
-                }, {
-                    field: 'dy',
-                    title: 'dy',
-                }, {
-                    field: 'size',
-                    title: 'size',
-                }, {
-                    field: 'bzq',
-                    title: 'bzq'
-                }, {
-                    field: 'price_eu',
-                    title: '欧元价格'
-                }, {
-                    field: 'price_us',
-                    title: '美元价格'
-                }, {
-                    field: 'price_uk',
-                    title: '英镑价格'
-                }, {
-                    field: 'price_jp',
-                    title: '日元价格'
-                }, {
                     field: 'status',
-                    title: '状态'
-                }, {
-                    field: 'replace',
-                    title: 'rep 可替换产品'
-                }, {
-                    field: 'description',
-                    title: '描述'
-                }, {
-                    field: 'stock',
-                    title: '库存'
-                }, {
+                    title: "状态",
+
+                },{
+                    field: "deadline_at",
+                    title: '截止时间'
+                },{
+                    field: 'complete_at',
+                    title:'完成时间'
+                },{
                     field: 'operate',
                     title: '操作',
                     align: 'center',
@@ -215,10 +172,11 @@
                 }
             ]
         })
-        $('#table').bootstrapTable('hideColumn', ['imgs', 'size', 'replace', 'description', 'bzq', 'id']);
+
     </script>
 @stop
 
 @section('plugins.BsCustomFileInput', true)
 @section('plugins.Summernote', true)
 @section('plugins.Sweetalert2', true)
+@section('plugins.BootstrapTable',true)

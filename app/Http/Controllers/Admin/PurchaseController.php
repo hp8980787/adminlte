@@ -17,8 +17,19 @@ class PurchaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->ajax()) {
+            $perPage = $request->perPage ?: 20;
+            $query = Purchase::query()->with('items');
+            if ($request->search) {
+                $search = $request->search;
+                $query->where('remark', 'like', "%$search%");
+            }
+            $data = $query->paginate($perPage);
+            return response()->json($data);
+        }
+
         return view('admin.purchase.index');
     }
 
@@ -67,7 +78,7 @@ class PurchaseController extends Controller
             DB::commit();
         } catch (\Exception $exception) {
             DB::rollBack();
-         return redirect()->back()->with('errors',$exception->getMessage());
+            return redirect()->back()->with('errors', $exception->getMessage());
         }
 
 
