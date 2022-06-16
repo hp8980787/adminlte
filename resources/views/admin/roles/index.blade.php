@@ -64,15 +64,10 @@
             height: 400px !important;
         }
     </style>
-
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css">
-
 @stop
 
 @section('js')
 
-    <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
-    <script src="/bootstrap-table-zh-CN.js"></script>
 
     <script>
 
@@ -263,3 +258,4 @@
 @section('plugins.Summernote', true)
 @section('plugins.Sweetalert2', true)
 @section('plugins.Listbox',true)
+@section('plugins.BootstrapTable',true)

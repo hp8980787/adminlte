@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class Admin
@@ -24,6 +25,8 @@ class Admin
         }
         $action = $request->route()->action;
         $name = $action['as'];
+        $permission=Permission::query()->where('name',$name)->first();
+        if (!$permission)return $next($request);
         if ($user->hasPermissionTo($name)) {
             return $next($request);
         }

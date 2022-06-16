@@ -139,14 +139,9 @@
         }
     </style>
 
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css">
-
 @stop
 
 @section('js')
-
-    <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
-    <script src="/bootstrap-table-zh-CN.js"></script>
 
     <script>
         function generateSku() {
@@ -335,3 +330,4 @@
 @section('plugins.BsCustomFileInput', true)
 @section('plugins.Summernote', true)
 @section('plugins.Sweetalert2', true)
+@section('plugins.BootstrapTable',true)

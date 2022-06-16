@@ -11,8 +11,6 @@
         <a href="{{ adminRoute('purchase.create') }}">
             <x-adminlte-button label="创建" theme="primary" icon="fas fa-plus"/>
         </a>
-
-
     </div>
 
 @stop

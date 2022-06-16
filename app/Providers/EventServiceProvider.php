@@ -29,8 +29,72 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         Event::listen(BuildingMenu::class, function (BuildingMenu $event) {
-            $event->menu->add('MAIN NAVIGATION');
-        $menu=config('menu');
+
+            $menu = [
+                [
+                    'type' => 'navbar-search',
+                    'text' => 'search',
+                    'topnav_right' => true,
+                ],
+                [
+                    'type' => 'fullscreen-widget',
+                    'topnav_right' => true,
+                ],
+                // Sidebar items:
+                [
+                    'type' => 'sidebar-menu-search',
+                    'text' => 'search',
+                ],
+                [
+                    'text' => trans('menu.dashboard'),
+                    'url' => adminRoute('dashboard'),
+                    'icon' => 'far fa-fw fa-file',
+                    'label_color' => 'success',
+                ],
+                [
+                    'text' => 'pages',
+                    'url' => 'admin/pages',
+                    'icon' => 'far fa-fw fa-file',
+                    'label' => 4,
+                    'label_color' => 'success',
+                ],
+                ['header' => 'account_settings'],
+                [
+                    'text' => 'profile',
+                    'url' => 'admin/settings',
+                    'icon' => 'fas fa-fw fa-user',
+                ],
+                [
+                    'text' => 'change_password',
+                    'url' => 'admin/settings',
+                    'icon' => 'fas fa-fw fa-lock',
+                ],
+                'MAIN NAVIGATION',
+                ['text' => trans('menu.menu'), 'icon' => 'fas fa-bars', 'url' => '1','can'=>'menu.menu' ],
+                [
+                    'text' => trans('menu.permissions'), 'icon' => 'fas fa-key', 'can' => 'menu.permissions', 'submenu' => [
+                    ['text' => trans('menu.role'), 'url' => adminRoute('roles.index'), 'icon' => 'fas fa-user-tag'],
+                    ['text' => trans('menu.permission'), 'icon' => 'fas fa-key', 'url' => adminRoute('permissions.index')],
+                ]
+                ],
+                [
+                    'text' => trans('menu.users-manage'), 'icon' => 'fas fa-users','can'=>'menu.users',
+                    'submenu' => [
+                        ['text' => trans('menu.users'), 'url' => adminRoute('users.index'), 'icon' => 'fas fa-user']
+                    ]
+                ],
+                [
+                    'text' => trans('menu.goods-information'), 'url' => adminRoute('products.index'),
+                    'can'=>'menu.products',
+                    'icon' => 'fab fa-product-hunt',
+                    'label_color' => 'success',
+                ],
+                ['text' => trans('menu.purchase'), 'icon' => 'fa fa-shopping-cart',  'can'=>'menu.purchase',
+                    'submenu' => [
+                        ['text' => trans('menu.purchase'), 'url' => adminRoute('purchase.index'), 'icon' => 'fa fa-shopping-cart'],
+                        ['text' => trans('menu.supplier'), 'url' => '', 'icon' => 'fas fa-truck'],
+                    ]
+                ],];
             $event->menu->add(...$menu);
 
 //            $event->menu->add(

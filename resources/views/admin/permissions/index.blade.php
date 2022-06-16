@@ -18,12 +18,12 @@
         <div class="row">
             <form action="{{ adminRoute('permissions.store') }}" method="post">
                 <x-adminlte-modal id="modalCreate" title="添加权限" size="lg" theme="teal"
-                                  icon="fas fa-bell" v-centered static-backdrop >
+                                  icon="fas fa-bell" v-centered static-backdrop>
                     <div class="body">
 
                         @csrf
                         <x-adminlte-input label="name" name="name" required></x-adminlte-input>
-                        <x-adminlte-input  value="web" type="hidden" name="guard_name" required>
+                        <x-adminlte-input value="web" type="hidden" name="guard_name" required>
                         </x-adminlte-input>
 
                     </div>
@@ -52,18 +52,10 @@
         }
     </style>
 
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css">
-
 @stop
 
 @section('js')
-
-    <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
-    <script src="/bootstrap-table-zh-CN.js"></script>
-
     <script>
-
-
         function operateFormatter(value, row, index) {
             return [
                 '<a class="edit" href="javascript:void(0)" title="edit">',
@@ -164,10 +156,10 @@
                 }
             ]
         })
-
     </script>
 @stop
 
 @section('plugins.BsCustomFileInput', true)
 @section('plugins.Summernote', true)
 @section('plugins.Sweetalert2', true)
+@section('plugins.BootstrapTable',true)
