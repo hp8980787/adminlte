@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PurchaseRequest;
 use App\Models\Purchase;
 use App\Models\PurchaseItem;
+use App\Notifications\CreatePurchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

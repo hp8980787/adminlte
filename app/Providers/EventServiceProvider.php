@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use JeroenNoten\LaravelAdminLte\Events\BuildingMenu;
 
@@ -28,6 +29,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
         Event::listen(BuildingMenu::class, function (BuildingMenu $event) {
 
             $menu = [
@@ -44,18 +46,26 @@ class EventServiceProvider extends ServiceProvider
                 [
                     'type' => 'sidebar-menu-search',
                     'text' => 'search',
+                ],[
+                    'text' => '通知',
+                    'url' => adminRoute('notifications.index'),
+                    'icon' => "fa fa-bell",
+                    'icon_color'=>'success',
+                    'label_color' => 'success',
+                    'id'=>'notifications',
+                    'label'=>5
                 ],
                 [
                     'text' => trans('menu.dashboard'),
                     'url' => adminRoute('dashboard'),
-                    'icon' => 'far fa-fw fa-file',
+                    'icon' => "fal fa-tachometer",
                     'label_color' => 'success',
                 ],
                 [
                     'text' => 'pages',
                     'url' => 'admin/pages',
                     'icon' => 'far fa-fw fa-file',
-                    'label' => 4,
+                    'label' => 0,
                     'label_color' => 'success',
                 ],
                 ['header' => 'account_settings'],
@@ -96,7 +106,6 @@ class EventServiceProvider extends ServiceProvider
                     ]
                 ],];
             $event->menu->add(...$menu);
-
 //            $event->menu->add(
 //                ['text' => '菜单', 'icon' => 'fas fa-bars', 'url' => '1'],
 //                [

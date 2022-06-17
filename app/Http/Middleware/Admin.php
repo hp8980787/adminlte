@@ -20,6 +20,7 @@ class Admin
     public function handle(Request $request, Closure $next)
     {
         $user = $request->user();
+
         if ($user->hasRole(['admin', 'superAdmin'])) {
             return $next($request);
         }
@@ -27,6 +28,7 @@ class Admin
         $name = $action['as'];
         $permission=Permission::query()->where('name',$name)->first();
         if (!$permission)return $next($request);
+
         if ($user->hasPermissionTo($name)) {
             return $next($request);
         }

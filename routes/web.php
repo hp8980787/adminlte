@@ -35,6 +35,6 @@ Route::name(config('admin.route.name'))->prefix(config('admin.route.prefix'))->m
     Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class)->parameter('permissions', 'id');
     Route::get('permissions-all', [\App\Http\Controllers\Admin\PermissionController::class, 'all'])->name('permissions.all');
     Route::get('assign-role', [\App\Http\Controllers\Admin\UserController::class, 'assignRole'])->name('user.assign-role');
-
+    Route::get('notifications',[\App\Http\Controllers\Admin\NotificationController::class,'index'])->name('notifications.index');
 
 });

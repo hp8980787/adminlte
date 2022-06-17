@@ -49,4 +49,15 @@
 @section('adminlte_js')
     @stack('js')
     @yield('js')
+    <script>
+        $.ajax({
+            url:"{{ adminRoute('notifications.index') }}",
+            method:"get",
+            success:(res)=>{
+                let count =res.length;
+               $("#notifications a p span").html(count)
+            }
+
+        })
+    </script>
 @stop
