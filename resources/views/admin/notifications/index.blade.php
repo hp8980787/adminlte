@@ -51,7 +51,7 @@
                                                           {{ $notification->data['purchase_id'] }}
                                                       </div>
                                                       <div class="col-md-4">
-                                                          sadsads
+                                                          {{ $notification->data['title']??'' }}
                                                       </div>
                                                       <div class="col-md-4 text-xl-right">
                                                           @if($notification->read_at)

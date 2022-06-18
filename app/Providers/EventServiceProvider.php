@@ -47,6 +47,11 @@ class EventServiceProvider extends ServiceProvider
                     'type' => 'sidebar-menu-search',
                     'text' => 'search',
                 ],[
+                    'text' => trans('menu.dashboard'),
+                    'url' => adminRoute('dashboard'),
+                    'icon' => "fal fa-tachometer",
+                    'label_color' => 'success',
+                ],[
                     'text' => '通知',
                     'url' => adminRoute('notifications.index'),
                     'icon' => "fa fa-bell",
@@ -55,12 +60,7 @@ class EventServiceProvider extends ServiceProvider
                     'id'=>'notifications',
                     'label'=>5
                 ],
-                [
-                    'text' => trans('menu.dashboard'),
-                    'url' => adminRoute('dashboard'),
-                    'icon' => "fal fa-tachometer",
-                    'label_color' => 'success',
-                ],
+
                 [
                     'text' => 'pages',
                     'url' => 'admin/pages',

@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-    <div class="container">
+
         <div class="row ml-3 mt-3" style="display: block">
             <form action="{{ adminRoute('purchase.store') }}" method="post">
                 @csrf
@@ -35,7 +35,7 @@
                         </x-adminlte-input-date>
                     </x-slot>
                     <div style="display: flex;flex-direction: row;">
-                        <x-adminlte-input fgroup-class="col-md-6" value="{{ old('remark') }}" label="title" name="title" required
+                        <x-adminlte-input fgroup-class="col-md-6" value="{{ old('title') }}" label="title" name="title" required
                                           placeholder="请填写title"></x-adminlte-input>
                         <x-adminlte-select fgroup-class="col-md-6" name="supplier_id" label="供应商">
                             <option value="1">aa公司</option>
@@ -73,7 +73,6 @@
 
 
         </div>
-    </div>
 
 @stop
 
@@ -86,9 +85,18 @@
         .min-width-100 {
             min-width: 100px;
         }
+        .fa-clock{
+            color:black;
+        }
+         .fa-times{
+            color:black !important;
+        }
+        .fa-calendar-alt{
+            color: black;
+        }
     </style>
 
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css">
+
 
 @stop
 
@@ -117,7 +125,7 @@
                 cols += ` <td><select  name="product_id[]" class="js-data-example-ajax form-control" required></select></td>`;
                 cols += '<td><input type="text" class="form-control" name="price[]" required /></td>';
                 cols += '<td><input type="number" min="1" class="form-control" name="quantity[]" required /></td>';
-                cols += '<td><input type="text" class="form-control" name="explain[]" required /></td>';
+                cols += '<td><input type="text" class="form-control" name="explain[]"  /></td>';
                 cols += '<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>';
                 newRow.append(cols);
                 $("table.order-list").append(newRow);

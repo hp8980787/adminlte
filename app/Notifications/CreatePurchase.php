@@ -38,7 +38,8 @@ class CreatePurchase extends Notification
     public function toDatabase()
     {
         return [
-            'purchase_id'=>$this->purchase->id,
+            'purchase_id' => $this->purchase->id,
+            'title' => $this->purchase->title,
         ];
     }
 

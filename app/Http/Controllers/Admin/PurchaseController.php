@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PurchaseRequest;
+use App\Http\Resources\PurchaseCollnection;
 use App\Models\Purchase;
 use App\Models\PurchaseItem;
 use App\Notifications\CreatePurchase;
@@ -28,7 +29,7 @@ class PurchaseController extends Controller
                 $query->where('remark', 'like', "%$search%");
             }
             $data = $query->paginate($perPage);
-            return response()->json($data);
+            return response()->json(new PurchaseCollnection($data));
         }
 
         return view('admin.purchase.index');
@@ -58,7 +59,7 @@ class PurchaseController extends Controller
         $purchaseData['deadline_at'] = $request->get('deadline_at');
         $purchaseData['remark'] = $request->get('remark');
         $purchaseData['supplier_id'] = $request->get('supplier_id');
-
+        $purchaseData['title'] = $request->get('title');
         $product_id = $request->product_id;
         $price = $request->price;
         $quantity = $request->quantity;
@@ -81,7 +82,8 @@ class PurchaseController extends Controller
             DB::rollBack();
             return redirect()->back()->with('errors', $exception->getMessage());
         }
-
+        $user->notify(new CreatePurchase($purchase));
+        return redirect()->route('purchase.index')->with('toast_success', '添加成功!');
 
     }
 

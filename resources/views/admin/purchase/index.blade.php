@@ -30,6 +30,7 @@
         .min-width-100 {
             min-width: 100px;
         }
+
     </style>
 
 @stop
@@ -39,21 +40,7 @@
 
 
     <script>
-        function generateSku() {
-            $.ajax({
-                url: "{{ adminRoute('sku') }}",
-                success: (response) => {
-                    $("input[name='sku']").val(response);
-                }
-            })
-        }
 
-        function ajaxRequest(params) {
-            var url = "{{ adminRoute('products.index') }}"
-            $.get(url + '?' + $.param(params.data)).then(function (res) {
-                params.success(res.data)
-            })
-        }
 
         function operateFormatter(value, row, index) {
             return [
@@ -101,22 +88,36 @@
             }
         }
 
-        function imgsFormatter(value, row, index) {
-            return "<a>点击查看</a>"
+        function expendFormatter(value, row, index) {
+            let items = row.items;
+            let table = "<table class='table'><thead><tr><th>product_id</th><th>说明</th><th>采购价格</th><th>采购数量</th><th>采购总价</th></tr></thead>";
+            table += "<tbody>"
+            for (let i in items) {
+                table += `<tr><td>${items[i].product_id}</td><td>${items[i].explain}</td><td>${items[i].price}</td>
+<td>${items[i].quantity}</td> <td>${items[i].amount}</td></tr>`;
+            }
+            table += "</tbody>"
+            return table;
         }
 
-        function imgFormatter(value, row, index) {
-            return `<img width="100px" src="/${value}">`;
+        function statusFormatter(value, row, index) {
+            switch (value) {
+                case '待审核':
+                    return `<span><i class="fa fa-circle text-danger"  aria-hidden="true"></i>待审核</span>`;
+                case '采购完成':
+                    return `<span><i class="fa fa-circle text-success"  aria-hidden="true"></i>采购完成</span>`;
+                case '审核通过,正在采购':
+                    return `<span><i class="fa fa-circle text-warning"  aria-hidden="true"></i>审核通过,正在采购</span>`;
+            }
         }
 
         $('#table').bootstrapTable({
             ajax: function (params) {
                 var url = "{{ adminRoute('purchase.index') }}"
                 $.get(url + '?' + $.param(params.data)).then(function (res) {
-                    console.log(res)
                     const data = res.data;
-                    data['total'] = res.total;
-                    data['totalNotFiltered'] = res.total;
+                    data['total'] = res.meta.total;
+                    data['totalNotFiltered'] =res.meta.total;
                     params.success(data)
                 })
             },
@@ -130,7 +131,6 @@
                     page: params.pageNumber,
                 };
             },
-
             showHeader: true,
             showColumns: true,
             hideColumn: ['sku'],
@@ -140,6 +140,9 @@
             pageNumber: 1,
             pageList: [5, 10, 20, 50, 100],//分页步进值
             search: true,//显示搜索框
+            detailView: true,
+            detailFormatter: expendFormatter,
+
             columns: [
                 {
                     checkbox: true
@@ -148,20 +151,24 @@
                     field: 'id',
                     title: 'id',
                 }, {
+                    field: "title",
+                    title: "title",
+                }, {
                     field: 'remark',
                     title: '留言',
                     class: 'min-width-200'
                 }, {
                     field: 'status',
                     title: "状态",
+                    formatter: statusFormatter
 
-                },{
+                }, {
                     field: "deadline_at",
                     title: '截止时间'
-                },{
+                }, {
                     field: 'complete_at',
-                    title:'完成时间'
-                },{
+                    title: '完成时间'
+                }, {
                     field: 'operate',
                     title: '操作',
                     align: 'center',
