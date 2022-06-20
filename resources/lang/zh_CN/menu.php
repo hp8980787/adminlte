@@ -10,5 +10,6 @@ return [
     'goods-information' => '商品信息',
     'purchase' => '采购',
     'supplier' => '供应商',
+    'storehouse'=>'仓库'
 
 ];

@@ -1,9 +1,14 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', '采购')
 
 @section('content_header')
-    <h1>采购</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ adminRoute('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">采购</li>
+        </ol>
+    </nav>
 @stop
 
 @section('content')
@@ -44,9 +49,9 @@
 
         function operateFormatter(value, row, index) {
             return [
-                '<a class="edit" href="javascript:void(0)" title="edit">',
-                '<i class="fas fa-edit"></i>',
-                '</a>  ',
+                // '<a class="edit" href="javascript:void(0)" title="edit">',
+                // '<i class="fas fa-edit"></i>',
+                // '</a>  ',
                 '<a class="remove" href="javascript:void(0)" title="Remove">',
                 '<i class="fa fa-trash"></i>',
                 '</a>'
@@ -183,7 +188,4 @@
     </script>
 @stop
 
-@section('plugins.BsCustomFileInput', true)
-@section('plugins.Summernote', true)
-@section('plugins.Sweetalert2', true)
 @section('plugins.BootstrapTable',true)

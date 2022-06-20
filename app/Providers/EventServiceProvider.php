@@ -46,19 +46,19 @@ class EventServiceProvider extends ServiceProvider
                 [
                     'type' => 'sidebar-menu-search',
                     'text' => 'search',
-                ],[
+                ], [
                     'text' => trans('menu.dashboard'),
                     'url' => adminRoute('dashboard'),
                     'icon' => "fal fa-tachometer",
                     'label_color' => 'success',
-                ],[
+                ], [
                     'text' => '通知',
                     'url' => adminRoute('notifications.index'),
                     'icon' => "fa fa-bell",
-                    'icon_color'=>'success',
+                    'icon_color' => 'success',
                     'label_color' => 'success',
-                    'id'=>'notifications',
-                    'label'=>5
+                    'id' => 'notifications',
+                    'label' => 5
                 ],
 
                 [
@@ -80,7 +80,7 @@ class EventServiceProvider extends ServiceProvider
                     'icon' => 'fas fa-fw fa-lock',
                 ],
                 'MAIN NAVIGATION',
-                ['text' => trans('menu.menu'), 'icon' => 'fas fa-bars', 'url' => '1','can'=>'menu.menu' ],
+                ['text' => trans('menu.menu'), 'icon' => 'fas fa-bars', 'url' => '1', 'can' => 'menu.menu'],
                 [
                     'text' => trans('menu.permissions'), 'icon' => 'fas fa-key', 'can' => 'menu.permissions', 'submenu' => [
                     ['text' => trans('menu.role'), 'url' => adminRoute('roles.index'), 'icon' => 'fas fa-user-tag'],
@@ -88,21 +88,22 @@ class EventServiceProvider extends ServiceProvider
                 ]
                 ],
                 [
-                    'text' => trans('menu.users-manage'), 'icon' => 'fas fa-users','can'=>'menu.users',
+                    'text' => trans('menu.users-manage'), 'icon' => 'fas fa-users', 'can' => 'menu.users',
                     'submenu' => [
                         ['text' => trans('menu.users'), 'url' => adminRoute('users.index'), 'icon' => 'fas fa-user']
                     ]
                 ],
                 [
                     'text' => trans('menu.goods-information'), 'url' => adminRoute('products.index'),
-                    'can'=>'menu.products',
+                    'can' => 'menu.products',
                     'icon' => 'fab fa-product-hunt',
                     'label_color' => 'success',
                 ],
-                ['text' => trans('menu.purchase'), 'icon' => 'fa fa-shopping-cart',  'can'=>'menu.purchase',
+                ['text' => trans('menu.purchase'), 'icon' => 'fa fa-shopping-cart', 'can' => 'menu.purchase',
                     'submenu' => [
-                        ['text' => trans('menu.purchase'), 'url' => adminRoute('purchase.index'), 'icon' => 'fa fa-shopping-cart'],
-                        ['text' => trans('menu.supplier'), 'url' => '', 'icon' => 'fas fa-truck'],
+                        ['text' => trans('menu.purchase'), 'url' => adminRoute('purchase.index'), 'icon' => 'fa fa-shopping-cart', 'active' => ['regex:@^.*purchase.*@'],],
+                        ['text' => trans('menu.supplier'), 'url' => adminRoute('supplier.index'), 'icon' => 'fas fa-truck', 'active' => ['regex:@^.*supplier.*@']],
+                        ['text' => trans('menu.storehouse'), 'url' => adminRoute('storehouse.index'), 'icon' => 'fas fa-warehouse'],
                     ]
                 ],];
             $event->menu->add(...$menu);

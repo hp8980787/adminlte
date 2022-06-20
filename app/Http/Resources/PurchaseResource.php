@@ -17,15 +17,17 @@ class PurchaseResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user'=>UserResource::make($this->user),
-            'supplier_id'=>$this->supplier_id,
-            'title'=>$this->title,
-            'remark'=>$this->remark,
-            'status'=>Purchase::PURCHASE_STATUS_GROUP[$this->status],
-            'deadline_at'=>$this->deadline_at,
-            'complete_at'=>$this->complete_at,
-            'created_at'=>$this->created_at,
-            'items'=>PurchaseItemsResource::collection($this->items),
+            'user' => UserResource::make($this->user),
+            'supplier_id' => $this->supplier_id,
+            'title' => $this->title,
+            'remark' => $this->remark,
+            'status' => Purchase::PURCHASE_STATUS_GROUP[$this->status],
+            'deadline_at' => $this->deadline_at,
+            'complete_at' => $this->complete_at,
+            'created_at' => $this->created_at,
+            'items' => PurchaseItemsResource::collection($this->items),
+            'editUrl' => adminRoute('purchase.edit', $this->id),
+            'delUrl' => adminRoute('purchase.destroy', $this->id)
         ];
     }
 }

@@ -1,9 +1,15 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', '权限修改')
 
 @section('content_header')
-    <h1>角色</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ adminRoute('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ adminRoute('permissions.index') }}">权限</a></li>
+            <li class="breadcrumb-item active" aria-current="page">edit</li>
+        </ol>
+    </nav>
 @stop
 
 @section('content')

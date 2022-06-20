@@ -1,46 +1,43 @@
 @extends('adminlte::page')
 
-@section('title', '权限')
+@section('title', '供应商')
 
 @section('content_header')
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ adminRoute('dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">权限</li>
+            <li class="breadcrumb-item active" aria-current="page">供应商</li>
         </ol>
     </nav>
 @stop
 
 @section('content')
     <div class="container">
-        <div class="row ml-3">
-            <div class="col-md-12">
-                <x-adminlte-button label="添加权限" theme="info" data-toggle="modal"
-                                   data-target="#modalCreate"></x-adminlte-button>
-            </div>
+        <x-adminlte-button label="添加" data-target="#modalAdd" data-toggle="modal" theme="success" />
+        <div class="row">
+
             <table id="table"></table>
         </div>
         <div class="row">
-            <form action="{{ adminRoute('permissions.store') }}" method="post">
-                <x-adminlte-modal id="modalCreate" title="添加权限" size="lg" theme="teal"
-                                  icon="fas fa-bell" v-centered static-backdrop>
-                    <div class="body">
-
+            <x-adminlte-modal id="modalAdd" title="添加供应商" size="lg" theme="teal"
+                              icon="fas fa-bell" v-centered static-backdrop scrollable>
+                <div class="form">
+                    <form action="{{ adminRoute('supplier.store') }}" method="POST">
                         @csrf
-                        <x-adminlte-input label="name" name="name" required></x-adminlte-input>
-                        <x-adminlte-input value="web" type="hidden" name="guard_name" required>
-                        </x-adminlte-input>
+                        <x-adminlte-input label="name" name="name" value="{{ old('name') }}" required></x-adminlte-input>
+                        <x-adminlte-input label="电话号码" name="phone" value="{{ old('phone') }}" required></x-adminlte-input>
+                        <x-adminlte-input label="邮箱" name="email" type="email" required></x-adminlte-input>
+                        <x-adminlte-input label="公司网址" name="web"></x-adminlte-input>
+                        <x-adminlte-textarea label="公司地址" name="address"></x-adminlte-textarea>
+                        <x-adminlte-button type="submit" class="mr-auto" theme="success" label="提交"/>
+                    </form>
+                </div>
+                <x-slot name="footerSlot">
 
-                    </div>
-                    <x-slot name="footerSlot">
-                        <x-adminlte-button class="mr-auto" type="submit" theme="success" label="submit"/>
 
-                    </x-slot>
-                </x-adminlte-modal>
-            </form>
+                </x-slot>
+            </x-adminlte-modal>
         </div>
-
-
     </div>
 
 
@@ -55,12 +52,19 @@
         .min-width-100 {
             min-width: 100px;
         }
+        .bootstrap-duallistbox-container select {
+            height: 400px !important;
+        }
     </style>
-
 @stop
 
 @section('js')
+
+
     <script>
+
+
+
         function operateFormatter(value, row, index) {
             return [
                 '<a class="edit" href="javascript:void(0)" title="edit">',
@@ -69,7 +73,6 @@
                 '<a class="remove" href="javascript:void(0)" title="Remove">',
                 '<i class="fa fa-trash"></i>',
                 '</a>',
-
             ].join('')
         }
 
@@ -78,7 +81,6 @@
                 window.location.href = row['editUrl'];
             },
             'click .remove': function (e, value, row, index) {
-                console.log(row.delUrl)
                 const delUrl = row['delUrl'];
                 Swal.fire({
                     title: '是否删除?',
@@ -106,14 +108,16 @@
 
                     }
                 })
-            }
+            },
+
         }
 
         $('#table').bootstrapTable({
             ajax: function (params) {
-                var url = "{{ adminRoute('permissions.index') }}"
+                var url = "{{ adminRoute('supplier.index') }}"
                 $.get(url + '?' + $.param(params.data)).then(function (res) {
                     const data = res.data;
+                    console.log(data)
                     data['total'] = res.meta.total;
                     data['totalNotFiltered'] = res.meta.total;
                     params.success(data)
@@ -144,23 +148,35 @@
                 {
                     field: 'id',
                     title: 'id',
+                    class: 'min-width-100'
                 }, {
                     field: 'name',
                     title: 'name',
+                    class: 'min-width-200',
                 }, {
-                    field: 'guard_name',
-                    title: 'guard_name'
+                    field: 'phone',
+                    title: '电话'
                 }, {
+                    field: 'email',
+                    title: '邮箱',
+                },{
+                    field: 'address',
+                    title: '地址',
+                },{
+                    field: 'web',
+                    title: '网址',
+                },{
                     field: 'operate',
                     title: '操作',
                     align: 'center',
                     clickToSelect: false,
-                    class: 'min-width-100',
+                    class: 'min-width-200',
                     events: window.operateEvents,
                     formatter: operateFormatter
                 }
             ]
         })
+
     </script>
 @stop
 

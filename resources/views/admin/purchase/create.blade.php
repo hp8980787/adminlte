@@ -1,9 +1,15 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', '采购')
 
 @section('content_header')
-    <h1>采购</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ adminRoute('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ adminRoute('purchase.index') }}">采购</a></li>
+            <li class="breadcrumb-item active" aria-current="page">create</li>
+        </ol>
+    </nav>
 @stop
 
 @section('content')
@@ -105,6 +111,17 @@
     <script>
 
         $(document).ready(function () {
+            $.ajax({
+                url:"{{ adminRoute('supplier.index') }}",
+                method:"get",
+                success:(res)=>{
+                    let options=[];
+                    for (let i in res){
+                        options+=`<option value="${res[i].id}">${res[i].name}</option>`
+                    }
+                   $('#supplier_id').html(options)
+                }
+            })
             var counter = 0;
 
             function select2Init() {
@@ -167,8 +184,6 @@
 
 @stop
 
-@section('plugins.BsCustomFileInput', true)
-@section('plugins.Summernote', true)
 @section('plugins.Sweetalert2', true)
 @section('plugins.TempusDominusBs4', true)
 @section('plugins.Select2', true)

@@ -1,62 +1,34 @@
 @extends('adminlte::page')
 
-@section('title', '权限')
+@section('title','仓库')
 
 @section('content_header')
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ adminRoute('dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">权限</li>
+            <li class="breadcrumb-item active" aria-current="page">仓库</li>
         </ol>
     </nav>
 @stop
-
 @section('content')
     <div class="container">
-        <div class="row ml-3">
-            <div class="col-md-12">
-                <x-adminlte-button label="添加权限" theme="info" data-toggle="modal"
-                                   data-target="#modalCreate"></x-adminlte-button>
-            </div>
+        <div class="row">
+            <x-adminlte-button label="新增" data-toggle="modal" data-target="#modalAdd" theme="success" />
+        </div>
+        <div class="row">
             <table id="table"></table>
         </div>
         <div class="row">
-            <form action="{{ adminRoute('permissions.store') }}" method="post">
-                <x-adminlte-modal id="modalCreate" title="添加权限" size="lg" theme="teal"
-                                  icon="fas fa-bell" v-centered static-backdrop>
-                    <div class="body">
-
-                        @csrf
-                        <x-adminlte-input label="name" name="name" required></x-adminlte-input>
-                        <x-adminlte-input value="web" type="hidden" name="guard_name" required>
-                        </x-adminlte-input>
-
-                    </div>
-                    <x-slot name="footerSlot">
-                        <x-adminlte-button class="mr-auto" type="submit" theme="success" label="submit"/>
-
-                    </x-slot>
+            <form action="{{ adminRoute('storehouse.store') }}" method="POST">
+                @csrf
+                <x-adminlte-modal id="modalAdd" title="新增仓库" size="lg" theme="teal"  v-centered static-backdrop scrollable >
+                    <x-adminlte-input label="名称" name="name" required ></x-adminlte-input>
+                    <x-adminlte-button type="submit" label="提交" theme="success" />
                 </x-adminlte-modal>
             </form>
+
         </div>
-
-
     </div>
-
-
-@stop
-
-@section('css')
-    <style>
-        .min-width-200 {
-            min-width: 200px
-        }
-
-        .min-width-100 {
-            min-width: 100px;
-        }
-    </style>
-
 @stop
 
 @section('js')
@@ -69,7 +41,6 @@
                 '<a class="remove" href="javascript:void(0)" title="Remove">',
                 '<i class="fa fa-trash"></i>',
                 '</a>',
-
             ].join('')
         }
 
@@ -78,7 +49,6 @@
                 window.location.href = row['editUrl'];
             },
             'click .remove': function (e, value, row, index) {
-                console.log(row.delUrl)
                 const delUrl = row['delUrl'];
                 Swal.fire({
                     title: '是否删除?',
@@ -106,16 +76,17 @@
 
                     }
                 })
-            }
+            },
+
         }
 
         $('#table').bootstrapTable({
             ajax: function (params) {
-                var url = "{{ adminRoute('permissions.index') }}"
+                var url = "{{ adminRoute('storehouse.index') }}"
                 $.get(url + '?' + $.param(params.data)).then(function (res) {
-                    const data = res.data;
-                    data['total'] = res.meta.total;
-                    data['totalNotFiltered'] = res.meta.total;
+                    const data = res;
+                    data['total'] = res.length
+                    data['totalNotFiltered'] =res.length
                     params.success(data)
                 })
             },
@@ -144,18 +115,17 @@
                 {
                     field: 'id',
                     title: 'id',
+                    class: 'min-width-100'
                 }, {
                     field: 'name',
                     title: 'name',
-                }, {
-                    field: 'guard_name',
-                    title: 'guard_name'
-                }, {
+                    class: 'min-width-200',
+                },{
                     field: 'operate',
                     title: '操作',
                     align: 'center',
                     clickToSelect: false,
-                    class: 'min-width-100',
+                    class: 'min-width-200',
                     events: window.operateEvents,
                     formatter: operateFormatter
                 }
@@ -163,6 +133,5 @@
         })
     </script>
 @stop
-
-
 @section('plugins.BootstrapTable',true)
+

@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Supplier extends Model
+class Storehouse extends Model
 {
     use HasFactory;
-
-    protected $table = 'supplier';
-    protected $fillable = [
-        'name','phone','email','web','address'
+    protected $table='storehouse';
+    protected $fillable=[
+        'name'
     ];
 }

@@ -129,6 +129,7 @@ class PurchaseController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Purchase::query()->where('id',$id)->delete();
+        return  response('success');
     }
 }

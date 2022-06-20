@@ -23,8 +23,24 @@ class SupplierRequest extends FormRequest
      */
     public function rules()
     {
+
+        switch ($this->method()) {
+            case 'POST':
+                return [
+                    'name' => 'required',
+                    'email' => 'required|email',
+                    'phone' => 'required',
+                    'address' => 'required|min:5'
+                ];
+            case 'PUT':
+                return [
+
+                    'email' => 'email',
+
+                ];
+        }
         return [
-            //
+
         ];
     }
 }

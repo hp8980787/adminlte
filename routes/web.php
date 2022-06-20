@@ -36,5 +36,6 @@ Route::name(config('admin.route.name'))->prefix(config('admin.route.prefix'))->m
     Route::get('permissions-all', [\App\Http\Controllers\Admin\PermissionController::class, 'all'])->name('permissions.all');
     Route::get('assign-role', [\App\Http\Controllers\Admin\UserController::class, 'assignRole'])->name('user.assign-role');
     Route::get('notifications',[\App\Http\Controllers\Admin\NotificationController::class,'index'])->name('notifications.index');
-
+    Route::resource('supplier',\App\Http\Controllers\Admin\SupplierController::class)->parameter('supplier','id');
+    Route::resource('storehouse',\App\Http\Controllers\Admin\StorehouseController::class)->parameter('storehouse','id')->except('show');
 });

@@ -1,9 +1,16 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', '通知')
 
 @section('content_header')
-    <h1>通知</h1>
+
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ adminRoute('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">通知</li>
+        </ol>
+    </nav>
 @stop
 
 @section('content')
@@ -96,8 +103,4 @@
     </script>
 @stop
 
-@section('plugins.BsCustomFileInput', true)
-@section('plugins.Summernote', true)
-@section('plugins.Sweetalert2', true)
-@section('plugins.Listbox',true)
-@section('plugins.BootstrapTable',true)
+

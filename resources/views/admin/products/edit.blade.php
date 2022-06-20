@@ -1,9 +1,15 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', '商品信息edit')
 
 @section('content_header')
-    <h1>商品信息</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ adminRoute('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ adminRoute('products.index') }}">商品信息</a></li>
+            <li class="breadcrumb-item active" aria-current="page">角色</li>
+        </ol>
+    </nav>
 @stop
 
 @section('content')
@@ -143,9 +149,6 @@
 
 
 @stop
-
-
-
 @section('js')
 
 @stop
