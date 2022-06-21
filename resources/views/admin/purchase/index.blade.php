@@ -48,14 +48,26 @@
 
 
         function operateFormatter(value, row, index) {
-            return [
-                // '<a class="edit" href="javascript:void(0)" title="edit">',
-                // '<i class="fas fa-edit"></i>',
-                // '</a>  ',
+            @role('admin')
+            let complete = []
+            if (row.status === '审核通过,正在采购') {
+                complete = ['<a class="complete ml-1" href="javascript:;" title="complete" >',
+                    '<i class="far fa-check-circle"></i>',
+                    '</a>'];
+            }
+            let remove = ['<a class="remove" href="javascript:void(0)" title="Remove">',
+                '<i class="fa fa-trash"></i>',
+                '</a>']
+            return remove.concat(complete).join('')
+            @else
+                return [
+
                 '<a class="remove" href="javascript:void(0)" title="Remove">',
                 '<i class="fa fa-trash"></i>',
                 '</a>'
             ].join('')
+            @endrole
+
         }
 
         window.operateEvents = {
@@ -90,6 +102,28 @@
 
                     }
                 })
+            },
+            'click .complete':function (e,value,row,index){
+                const id = row.id;
+                $.ajax({
+                    url:"{{ adminRoute('purchase.complete') }}",
+                    method:'POST',
+                    data:{
+                        id:id,
+                    },
+                    async:false,
+                    success:(res)=>{
+                        Swal.fire(
+                            '成功',res,'success'
+                        )
+                    }, error: function(xhr, error){
+                        Swal.fire(
+                            '错误',
+                            xhr.responseText,
+                            'error'
+                        )
+                    },
+                })
             }
         }
 
@@ -122,7 +156,7 @@
                 $.get(url + '?' + $.param(params.data)).then(function (res) {
                     const data = res.data;
                     data['total'] = res.meta.total;
-                    data['totalNotFiltered'] =res.meta.total;
+                    data['totalNotFiltered'] = res.meta.total;
                     params.success(data)
                 })
             },

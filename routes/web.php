@@ -27,6 +27,7 @@ Route::name(config('admin.route.name'))->prefix(config('admin.route.prefix'))->m
     Route::resource('products', \App\Http\Controllers\Admin\ProductsController::class)->parameter('products', 'id');
     Route::get('generate/sku', [\App\Http\Controllers\Admin\HelpersController::class, 'sku'])->name('sku');
     Route::resource('purchase', \App\Http\Controllers\Admin\PurchaseController::class)->parameter('purchase', 'id');
+    Route::post('purchase-complete',[\App\Http\Controllers\Admin\PurchaseController::class,'complete'])->name('purchase.complete');
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->parameter('users', 'id');
     Route::put('users-assign-roles', [\App\Http\Controllers\Admin\UserController::class, 'assignRoles'])->name('users.assign-roles');
     Route::resource('roles', \App\Http\Controllers\Admin\RoleController::class)->parameter('roles', 'id');

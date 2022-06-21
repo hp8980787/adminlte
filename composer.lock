@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6c6c167de44d5a1f299b931cf35daa8b",
+    "content-hash": "e7426f5d501ef2089a2534b3d6c056d5",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -6049,94 +6049,6 @@
             "time": "2022-05-21T10:24:18+00:00"
         },
         {
-            "name": "symfony/workflow",
-            "version": "v5.4.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/workflow.git",
-                "reference": "666681ad1904366c41dcfdddccdb3114a50368fc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/workflow/zipball/666681ad1904366c41dcfdddccdb3114a50368fc",
-                "reference": "666681ad1904366c41dcfdddccdb3114a50368fc",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "require": {
-                "php": ">=7.2.5",
-                "symfony/polyfill-php80": "^1.15"
-            },
-            "conflict": {
-                "symfony/event-dispatcher": "<4.4"
-            },
-            "require-dev": {
-                "psr/log": "^1|^2|^3",
-                "symfony/dependency-injection": "^4.4|^5.0|^6.0",
-                "symfony/event-dispatcher": "^4.4|^5.0|^6.0",
-                "symfony/expression-language": "^4.4|^5.0|^6.0",
-                "symfony/security-core": "^4.4|^5.0|^6.0",
-                "symfony/validator": "^4.4|^5.0|^6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Workflow\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Grégoire Pineau",
-                    "email": "lyrixx@lyrixx.info"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Provides tools for managing a workflow or finite state machine",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "petrinet",
-                "place",
-                "state",
-                "statemachine",
-                "transition",
-                "workflow"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/workflow/tree/v5.4.9"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2022-05-06T08:44:16+00:00"
-        },
-        {
             "name": "tijsverkoyen/css-to-inline-styles",
             "version": "2.2.4",
             "source": {
@@ -6499,79 +6411,6 @@
                 "source": "https://github.com/Wulfheart/pretty-routes/tree/0.3.0"
             },
             "time": "2021-05-03T09:19:08+00:00"
-        },
-        {
-            "name": "zerodahero/laravel-workflow",
-            "version": "v3.3.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zerodahero/laravel-workflow.git",
-                "reference": "b94e97340030f2522a1243367eff6d96db3dab40"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zerodahero/laravel-workflow/zipball/b94e97340030f2522a1243367eff6d96db3dab40",
-                "reference": "b94e97340030f2522a1243367eff6d96db3dab40",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "require": {
-                "illuminate/console": "^7.1|^8.0",
-                "illuminate/contracts": "^7.1|^8.0",
-                "illuminate/support": "^7.1|^8.0",
-                "php": ">=7.2",
-                "symfony/event-dispatcher-contracts": "^2.4",
-                "symfony/process": "^5.0",
-                "symfony/workflow": "^5.0"
-            },
-            "require-dev": {
-                "fakerphp/faker": "^1.13",
-                "mockery/mockery": "^1.2",
-                "orchestra/testbench": "^5.2|^6.0",
-                "phpunit/phpunit": "^8.0",
-                "symfony/var-dumper": "^5.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.x-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "ZeroDaHero\\LaravelWorkflow\\WorkflowServiceProvider"
-                    ],
-                    "aliases": {
-                        "Workflow": "ZeroDaHero\\LaravelWorkflow\\Facades\\WorkflowFacade"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "ZeroDaHero\\LaravelWorkflow\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Integerate Symfony Workflow component into Laravel.",
-            "keywords": [
-                "laravel",
-                "laravel7",
-                "laravel8",
-                "symfony",
-                "workflow"
-            ],
-            "support": {
-                "issues": "https://github.com/zerodahero/laravel-workflow/issues",
-                "source": "https://github.com/zerodahero/laravel-workflow/tree/v3.3.3"
-            },
-            "time": "2021-06-11T20:08:06+00:00"
         }
     ],
     "packages-dev": [
