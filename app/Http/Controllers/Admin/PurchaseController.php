@@ -23,7 +23,7 @@ class PurchaseController extends Controller
     {
         if ($request->ajax()) {
             $perPage = $request->perPage ?: 20;
-            $query = Purchase::query()->with('items');
+            $query = Purchase::query()->with(['items']);
             if ($request->search) {
                 $search = $request->search;
                 $query->where('remark', 'like', "%$search%");
@@ -64,11 +64,13 @@ class PurchaseController extends Controller
         $price = $request->price;
         $quantity = $request->quantity;
         $explain = $request->explain;
+        $storehouse = $request->storehouse_id;
         try {
             DB::beginTransaction();
             $purchase = Purchase::query()->create($purchaseData);
             $item = [];
             foreach ($product_id as $k => $v) {
+                $item['storehouse_id'] = $storehouse[$k];
                 $item['purchase_id'] = $purchase->id;
                 $item['product_id'] = $v;
                 $item['quantity'] = $quantity[$k];
@@ -83,7 +85,7 @@ class PurchaseController extends Controller
             return redirect()->back()->with('errors', $exception->getMessage());
         }
         $user->notify(new CreatePurchase($purchase));
-        return redirect()->route('purchase.index')->with('toast_success', '添加成功!');
+        return redirect()->route('purchase.index')->with('success', '添加成功!');
 
     }
 
@@ -129,7 +131,7 @@ class PurchaseController extends Controller
      */
     public function destroy($id)
     {
-        Purchase::query()->where('id',$id)->delete();
-        return  response('success');
+        Purchase::query()->where('id', $id)->delete();
+        return response('success');
     }
 }

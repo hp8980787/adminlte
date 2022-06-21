@@ -14,71 +14,74 @@
 
 @section('content')
 
-        <div class="row ml-3 mt-3" style="display: block">
-            <form action="{{ adminRoute('purchase.store') }}" method="post">
-                @csrf
-                <x-adminlte-card title="Form Card" theme="info" theme-mode="info"
-                                 class="elevation-3" body-class="bg-grey" header-class="bg-info"
-                                 footer-class="bg-info border-top rounded border-light"
-                                 icon="fas fa-lg fa-bell" collapsible removable maximizable>
-                    <x-slot name="toolsSlot">
-                        @php
-                            $config = [
-                                'format' => 'YYYY-MM-DD HH.mm',
-                                'dayViewHeaderFormat' => 'MMM YYYY',
-                                'minDate' => "js:moment().startOf('month')",
-                                'maxDate' => "js:moment().endOf('year')",
-                                'daysOfWeekDisabled' => [0, 6],
-                            ];
-                        @endphp
-                        <x-adminlte-input-date name="deadline_at" label="采购截止时间" igroup-size="sm"
-                                            value="{{ old('deadline_at') }}"  theme="info"  :config="$config" placeholder="Choose a working day...">
-                            <x-slot name="appendSlot">
-                                <div class="input-group-text bg-dark">
-                                    <i class="fas fa-calendar-day"></i>
-                                </div>
-                            </x-slot>
-                        </x-adminlte-input-date>
-                    </x-slot>
-                    <div style="display: flex;flex-direction: row;">
-                        <x-adminlte-input fgroup-class="col-md-6" value="{{ old('title') }}" label="title" name="title" required
-                                          placeholder="请填写title"></x-adminlte-input>
-                        <x-adminlte-select fgroup-class="col-md-6" name="supplier_id" label="供应商">
-                            <option value="1">aa公司</option>
-                            <option value="2">b公司</option>
-                            <option value="3">c公司</option>
-                            <option value="add">创建</option>
-                        </x-adminlte-select>
-                    </div>
-                    <x-adminlte-textarea label="备注" name="remark"></x-adminlte-textarea>
-                    <div class="col-md-3 mt-3 mb-3">
-                        <x-adminlte-button id="addrow" theme="info" label="添加列"></x-adminlte-button>
-                    </div>
-                    <table id="myTable" class=" table order-list">
-                        <thead>
-                        <tr>
-                            <td>产品(必须)</td>
-                            <td>采购价格(必须)</td>
-                            <td>采购数量(必须)</td>
-                            <td>说明</td>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
+    <div class="row ml-3 mt-3" style="display: block">
+        <form action="{{ adminRoute('purchase.store') }}" method="post">
+            @csrf
+            <x-adminlte-card title="Form Card" theme="info" theme-mode="info"
+                             class="elevation-3" body-class="bg-grey" header-class="bg-info"
+                             footer-class="bg-info border-top rounded border-light"
+                             icon="fas fa-lg fa-bell" collapsible removable maximizable>
+                <x-slot name="toolsSlot">
+                    @php
+                        $config = [
+                            'format' => 'YYYY-MM-DD HH.mm',
+                            'dayViewHeaderFormat' => 'MMM YYYY',
+                            'minDate' => "js:moment().startOf('month')",
+                            'maxDate' => "js:moment().endOf('year')",
+                            'daysOfWeekDisabled' => [0, 6],
+                        ];
+                    @endphp
+                    <x-adminlte-input-date name="deadline_at" label="采购截止时间" igroup-size="sm"
+                                           value="{{ old('deadline_at') }}" theme="info" :config="$config"
+                                           placeholder="Choose a working day...">
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text bg-dark">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input-date>
+                </x-slot>
+                <div style="display: flex;flex-direction: row;">
+                    <x-adminlte-input fgroup-class="col-md-6" value="{{ old('title') }}" label="title" name="title"
+                                      required
+                                      placeholder="请填写title"></x-adminlte-input>
+                    <x-adminlte-select fgroup-class="col-md-6" name="supplier_id" label="供应商">
+                        <option value="1">aa公司</option>
+                        <option value="2">b公司</option>
+                        <option value="3">c公司</option>
+                        <option value="add">创建</option>
+                    </x-adminlte-select>
+                </div>
+                <x-adminlte-textarea label="备注" name="remark"></x-adminlte-textarea>
+                <div class="col-md-3 mt-3 mb-3">
+                    <x-adminlte-button id="addrow" theme="info" label="添加列"></x-adminlte-button>
+                </div>
+                <table id="myTable" class=" table order-list">
+                    <thead>
+                    <tr>
+                        <td>仓库(必须)</td>
+                        <td>产品(必须)</td>
+                        <td>采购价格(必须)</td>
+                        <td>采购数量(必须)</td>
+                        <td>说明</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
 
-                        </tr>
-                        </tbody>
+                    </tr>
+                    </tbody>
 
-                    </table>
-                    <x-slot name="footerSlot">
-                        <x-adminlte-button class="d-flex ml-auto" theme="light" type="submit" label="submit"
-                                           icon="fas fa-sign-in"/>
-                    </x-slot>
-                </x-adminlte-card>
-            </form>
+                </table>
+                <x-slot name="footerSlot">
+                    <x-adminlte-button class="d-flex ml-auto" theme="light" type="submit" label="submit"
+                                       icon="fas fa-sign-in"/>
+                </x-slot>
+            </x-adminlte-card>
+        </form>
 
 
-        </div>
+    </div>
 
 @stop
 
@@ -91,13 +94,16 @@
         .min-width-100 {
             min-width: 100px;
         }
-        .fa-clock{
-            color:black;
+
+        .fa-clock {
+            color: black;
         }
-         .fa-times{
-            color:black !important;
+
+        .fa-times {
+            color: black !important;
         }
-        .fa-calendar-alt{
+
+        .fa-calendar-alt {
             color: black;
         }
     </style>
@@ -112,16 +118,29 @@
 
         $(document).ready(function () {
             $.ajax({
-                url:"{{ adminRoute('supplier.index') }}",
-                method:"get",
-                success:(res)=>{
-                    let options=[];
-                    for (let i in res){
-                        options+=`<option value="${res[i].id}">${res[i].name}</option>`
+                url: "{{ adminRoute('supplier.index') }}",
+                method: "get",
+                success: (res) => {
+                    let options = [];
+                    for (let i in res) {
+                        options += `<option value="${res[i].id}">${res[i].name}</option>`
                     }
-                   $('#supplier_id').html(options)
+                    $('#supplier_id').html(options)
                 }
             })
+            var options = '';
+            $.ajax({
+                url: "{{ adminRoute('storehouse.index') }}",
+                method: 'get',
+                async: false,
+                success: (res) => {
+                    console.log(res)
+                    for (let i in res) {
+                        options += `<option value="${i}">${res[i]}</option>`
+                    }
+                }
+            })
+
             var counter = 0;
 
             function select2Init() {
@@ -136,9 +155,12 @@
                 });
             }
 
+
             $("#addrow").on("click", function () {
+                console.log(options)
                 var newRow = $("<tr>");
                 var cols = "";
+                cols +=`<td><select name="storehouse_id[]" class=" form-control">`+options+`</select></td>`;
                 cols += ` <td><select  name="product_id[]" class="js-data-example-ajax form-control" required></select></td>`;
                 cols += '<td><input type="text" class="form-control" name="price[]" required /></td>';
                 cols += '<td><input type="number" min="1" class="form-control" name="quantity[]" required /></td>';

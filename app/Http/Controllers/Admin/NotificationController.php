@@ -30,7 +30,7 @@ class NotificationController extends Controller
                     ->selectRaw('(select count(*)as nums from notifications as n where  read_at is null and n.type=notifications.type and n.notifiable_id=notifications.notifiable_id )as nums,
                     type,max(read_at)as read_at,notifiable_id')
                     ->groupBy('type','notifiable_id')->get();
-                $notifications = $user->notifications;
+                $notifications = $user->unReadNotifications;
             return view('admin.notifications.index', compact('notifications','categories'));
         }
     }

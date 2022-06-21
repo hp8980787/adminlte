@@ -10,6 +10,11 @@ class PurchaseItem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'product_id','explain','price','quantity','amount','purchase_id'
+        'product_id', 'explain', 'price', 'quantity', 'amount', 'purchase_id','storehouse_id'
     ];
+
+    public function storehouse()
+    {
+        return $this->hasOne(Storehouse::class,'id','storehouse_id');
+    }
 }

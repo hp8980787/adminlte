@@ -23,6 +23,7 @@ class PurchaseItemsResource extends JsonResource
             'amount' => $this->amount,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'storehouse'=>new StorehouseResource($this->storehouse)
         ];
     }
 }

@@ -95,10 +95,10 @@
 
         function expendFormatter(value, row, index) {
             let items = row.items;
-            let table = "<table class='table'><thead><tr><th>product_id</th><th>说明</th><th>采购价格</th><th>采购数量</th><th>采购总价</th></tr></thead>";
+            let table = "<table class='table'><thead><tr><th>product_id</th><th>仓库</th><th>说明</th><th>采购价格</th><th>采购数量</th><th>采购总价</th></tr></thead>";
             table += "<tbody>"
             for (let i in items) {
-                table += `<tr><td>${items[i].product_id}</td><td>${items[i].explain}</td><td>${items[i].price}</td>
+                table += `<tr><td>${items[i].product_id}</td><td>${items[i].storehouse.name}</td><td>${items[i].explain}</td><td>${items[i].price}</td>
 <td>${items[i].quantity}</td> <td>${items[i].amount}</td></tr>`;
             }
             table += "</tbody>"
