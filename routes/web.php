@@ -39,4 +39,7 @@ Route::name(config('admin.route.name'))->prefix(config('admin.route.prefix'))->m
     Route::get('notifications',[\App\Http\Controllers\Admin\NotificationController::class,'index'])->name('notifications.index');
     Route::resource('supplier',\App\Http\Controllers\Admin\SupplierController::class)->parameter('supplier','id');
     Route::resource('storehouse',\App\Http\Controllers\Admin\StorehouseController::class)->parameter('storehouse','id')->except('show');
+    Route::resource('orders',\App\Http\Controllers\Admin\OrdersController::class)->parameter('orders','id')->except('show');
+    Route::post('orders-import',[\App\Http\Controllers\Admin\OrdersController::class,'import'])->name('orders.import');
+    Route::get('rate/select',[\App\Http\Controllers\Admin\RateController::class,'select'])->name('rate.select');
 });

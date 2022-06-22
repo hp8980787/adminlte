@@ -46,12 +46,14 @@ class EventServiceProvider extends ServiceProvider
                 [
                     'type' => 'sidebar-menu-search',
                     'text' => 'search',
-                ], [
+                ],
+                [
                     'text' => trans('menu.dashboard'),
                     'url' => adminRoute('dashboard'),
                     'icon' => "fal fa-tachometer",
                     'label_color' => 'success',
-                ], [
+                ],
+                [
                     'text' => '通知',
                     'url' => adminRoute('notifications.index'),
                     'icon' => "fa fa-bell",
@@ -60,7 +62,6 @@ class EventServiceProvider extends ServiceProvider
                     'id' => 'notifications',
                     'label' => 5
                 ],
-
                 [
                     'text' => 'pages',
                     'url' => 'admin/pages',
@@ -105,7 +106,14 @@ class EventServiceProvider extends ServiceProvider
                         ['text' => trans('menu.supplier'), 'url' => adminRoute('supplier.index'), 'icon' => 'fas fa-truck', 'active' => ['regex:@^.*supplier.*@']],
                         ['text' => trans('menu.storehouse'), 'url' => adminRoute('storehouse.index'), 'icon' => 'fas fa-warehouse'],
                     ]
-                ],];
+                ],
+                [   'text'=>trans('menu.orders'),'icon'=>'fas fa-shopping-bag',
+                    'submenu'=>[
+                        [ 'text'=>trans('menu.orders'),'icon'=>'fas fa-shopping-bag','url'=>route('orders.index')]
+                    ]
+                ],
+
+                ];
             $event->menu->add(...$menu);
 //            $event->menu->add(
 //                ['text' => '菜单', 'icon' => 'fas fa-bars', 'url' => '1'],

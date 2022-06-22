@@ -91,7 +91,7 @@
                 popup: 'colored-toast'
             },
             showConfirmButton: false,
-            timer: 2000,
+            timer: 2500,
             timerProgressBar: true
         })
         @if(\Illuminate\Support\Facades\Session::has('success'))
@@ -107,6 +107,15 @@
             icon: 'error',
             title: message,
         })
+        @endif
+        @if ($errors->any())
+        @foreach ($errors->all() as $error)
+         Toast.fire({
+            icon: 'error',
+            title: "{{ $error }}",
+        })
+        @endforeach
+
         @endif
         $.ajax({
             url: "{{ adminRoute('notifications.index') }}",
