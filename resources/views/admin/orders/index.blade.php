@@ -13,10 +13,16 @@
         <div class="row">
             <div class="col-md-12">
                 <x-adminlte-button label="create" data-toggle="modal" data-target="#modalAdd" theme="success"/>
-                <x-adminlte-button label="导入" data-toggle="modal" data-target="#modalImport" theme="info" icon="fas fa-file-import"/>
+                <x-adminlte-button label="导入" data-toggle="modal" data-target="#modalImport" theme="info"
+                                   icon="fas fa-file-import"/>
             </div>
         </div>
-        <div class="row" >
+        <div class="row">
+            <table id="table">
+
+            </table>
+        </div>
+        <div class="row">
             <x-adminlte-modal id="modalAdd" size="lg" scrollable theme="teal" icon="fas fa-shopping-bag">
                 <form action="{{ adminRoute('orders.store') }}" method="POST">
                     @csrf
@@ -49,8 +55,9 @@
         </div>
         <div class="row">
             <x-adminlte-modal id="modalImport" size="lg" theme="info" icon="fas fa-file-import">
-                <form id="orders-import" action="{{ adminRoute('orders.import') }}" method="POST" enctype="multipart/form-data">
-                  @csrf
+                <form id="orders-import" action="{{ adminRoute('orders.import') }}" method="POST"
+                      enctype="multipart/form-data">
+                    @csrf
                     <x-adminlte-input-file name="file" igroup-size="sm" placeholder="仅支持 xml csv excel">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-lightblue">
@@ -60,7 +67,8 @@
                     </x-adminlte-input-file>
                 </form>
                 <x-slot name="footerSlot">
-                    <x-adminlte-button onClick="document.getElementById('orders-import').submit()" theme="success" type="submit" label="提交" />
+                    <x-adminlte-button onClick="document.getElementById('orders-import').submit()" theme="success"
+                                       type="submit" label="提交"/>
                 </x-slot>
             </x-adminlte-modal>
         </div>
@@ -102,7 +110,67 @@
                 }
                 return false;
             })
+            const $table = $('#table');
+            $table.bootstrapTable({
+                ajax: function (params) {
+                    var url = "{{ adminRoute('orders.index') }}"
+                    $.get(url + '?' + $.param(params.data)).then(function (res) {
+                        const data = res.data;
+                        data['total'] = res.meta.total;
+                        data['totalNotFiltered'] = res.meta.total;
+                        params.success(data)
+                    })
+                },
+                queryParamsType: '',
+                queryParams: function (params) {
+                    return {
+                        perPage: params.pageSize,   //页面大小
+                        search: params.searchText, //搜索
+                        order: params.order, //排序
+                        ordername: params.sort, //排序
+                        page: params.pageNumber,
 
+                    };
+                },
+                showHeader: true,
+                showColumns: true,
+                // hideColumn: ['sku'],
+                showRefresh: true,
+                pagination: true,//分页
+                sidePagination: 'server',//服务器端分页
+                pageNumber: 1,
+                pageList: [10, 20, 50, 100],//分页步进值
+                search: true,//显示搜索框
+                columns: [
+                    {
+                        checkbox: true
+                    },
+                    {
+                        field: 'id',
+                        title: 'id',
+                    }, {
+                        field: 'trans_id',
+                        title: '交易id',
+                    }, {
+                        field: 'email',
+                        title: '邮箱'
+                    }, {
+                        field: 'roles',
+                        title: '角色'
+                    }, {
+                        field: 'created_at',
+                        title: '创建时间'
+                    }, {
+                        field: 'operate',
+                        title: '操作',
+                        align: 'center',
+                        clickToSelect: false,
+                        class: 'min-width-100',
+                        events: window.operateEvents,
+                        formatter: operateFormatter
+                    }
+                ]
+            })
         })
     </script>
 @stop
