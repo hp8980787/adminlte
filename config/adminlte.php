@@ -457,15 +457,29 @@ return [
                     'type' => 'js',
                     'asset' => true,
                     'location' => 'vendor/bootstrap-table/bootstrap-table.min.js',
-                ],[
+                ], [
                     'type' => 'js',
                     'asset' => true,
                     'location' => 'vendor/bootstrap-table/bootstrap-table-zh-CN.js',
+                ],[
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/bootstrap-table/bootstrap-table-editable.min.js',
                 ],
                 [
                     'type' => 'css',
                     'asset' => true,
                     'location' => 'vendor/bootstrap-table/bootstrap-table.min.css',
+                ],
+            ],
+        ],
+        'X-Editable' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/x-editable/bootstrap-editable.min.js',
                 ],
             ],
         ],

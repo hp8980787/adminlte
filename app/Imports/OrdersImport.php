@@ -55,7 +55,7 @@ class OrdersImport implements ToCollection
                 'street2' => $item[array_search('street2', $keyValueSort)],
                 'ip' => $item[array_search('ip', $keyValueSort)],
                 'description' => $item[array_search('description', $keyValueSort)],
-                'product_code' => $item[array_search('description', $keyValueSort)],
+                'product_code' => $item[array_search('product_code', $keyValueSort)],
 
             ];
             if ($item[array_search('phone',$keyValueSort)]){

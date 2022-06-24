@@ -1,3 +1,14 @@
-.content-wrapper{
+.content-wrapper {
     width: 100% !important;
+}
+
+.min-width-300 {
+    min-width: 300px;
+}
+.min-width-200 {
+    min-width: 200px;
+}
+
+.min-width-100 {
+    min-width: 100px;
 }

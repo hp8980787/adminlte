@@ -9,77 +9,81 @@
     </nav>
 @stop
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <x-adminlte-button label="create" data-toggle="modal" data-target="#modalAdd" theme="success"/>
-                <x-adminlte-button label="导入" data-toggle="modal" data-target="#modalImport" theme="info"
-                                   icon="fas fa-file-import"/>
-            </div>
-        </div>
-        <div class="row">
-            <table id="table">
 
-            </table>
-        </div>
-        <div class="row">
-            <x-adminlte-modal id="modalAdd" size="lg" scrollable theme="teal" icon="fas fa-shopping-bag">
-                <form action="{{ adminRoute('orders.store') }}" method="POST">
-                    @csrf
-                    <x-adminlte-input name="trans_id" label="trans_id" required></x-adminlte-input>
-                    <x-adminlte-input name="order_number" label="order_number" required></x-adminlte-input>
-                    <x-adminlte-input name="total" label="总价" required></x-adminlte-input>
-                    <x-adminlte-select name="currency" label="货币单位" required>
-                        <option value="">请选择</option>
-                        <option value="EUR">EUR</option>
-                        <option value="JPY">JPY</option>
-                        <option value="USD">USD</option>
-                        <option value="GBP">GBP</option>
-                        <option value="SGD">SGD</option>
-                    </x-adminlte-select>
-                    <x-adminlte-input name="total_usd" label="总价" disabled="" required></x-adminlte-input>
-                    <x-adminlte-input name="name" label="姓名" required></x-adminlte-input>
-                    <x-adminlte-input name="phone" label="电话" required></x-adminlte-input>
-                    <x-adminlte-input name="email" type="email" label="email" required></x-adminlte-input>
-                    <x-adminlte-input name="postal" label="邮编" required></x-adminlte-input>
-                    <x-adminlte-input name="country" label="国家" required></x-adminlte-input>
-                    <x-adminlte-input name="state" label="state" required></x-adminlte-input>
-                    <x-adminlte-input name="city" label="city" required></x-adminlte-input>
-                    <x-adminlte-input name="street1" label="street1" required></x-adminlte-input>
-                    <x-adminlte-input name="street2" label="street2"></x-adminlte-input>
-                    <x-adminlte-input name="product_code" label="pcode"></x-adminlte-input>
-                    <x-adminlte-input name="description" label="description"></x-adminlte-input>
-
-                </form>
-            </x-adminlte-modal>
-        </div>
-        <div class="row">
-            <x-adminlte-modal id="modalImport" size="lg" theme="info" icon="fas fa-file-import">
-                <form id="orders-import" action="{{ adminRoute('orders.import') }}" method="POST"
-                      enctype="multipart/form-data">
-                    @csrf
-                    <x-adminlte-input-file name="file" igroup-size="sm" placeholder="仅支持 xml csv excel">
-                        <x-slot name="prependSlot">
-                            <div class="input-group-text bg-lightblue">
-                                <i class="fas fa-upload"></i>
-                            </div>
-                        </x-slot>
-                    </x-adminlte-input-file>
-                </form>
-                <x-slot name="footerSlot">
-                    <x-adminlte-button onClick="document.getElementById('orders-import').submit()" theme="success"
-                                       type="submit" label="提交"/>
-                </x-slot>
-            </x-adminlte-modal>
+    <div class="row">
+        <div class="col-md-12">
+            <x-adminlte-button label="create" data-toggle="modal" data-target="#modalAdd" theme="success"/>
+            <x-adminlte-button label="导入" data-toggle="modal" data-target="#modalImport" theme="info"
+                               icon="fas fa-file-import"/>
         </div>
     </div>
+    <div class="row">
+        <div class="table-responsive">
+            <table id="table" data-editable="true"  data-editable-emptytext="product_code">
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <x-adminlte-modal id="modalAdd" size="lg" scrollable theme="teal" icon="fas fa-shopping-bag">
+            <form action="{{ adminRoute('orders.store') }}" method="POST">
+                @csrf
+                <x-adminlte-input name="trans_id" label="trans_id" required></x-adminlte-input>
+                <x-adminlte-input name="order_number" label="order_number" required></x-adminlte-input>
+                <x-adminlte-input name="total" label="总价" required></x-adminlte-input>
+                <x-adminlte-select name="currency" label="货币单位" required>
+                    <option value="">请选择</option>
+                    <option value="EUR">EUR</option>
+                    <option value="JPY">JPY</option>
+                    <option value="USD">USD</option>
+                    <option value="GBP">GBP</option>
+                    <option value="SGD">SGD</option>
+                </x-adminlte-select>
+                <x-adminlte-input name="total_usd" label="总价" disabled="" required></x-adminlte-input>
+                <x-adminlte-input name="name" label="姓名" required></x-adminlte-input>
+                <x-adminlte-input name="phone" label="电话" required></x-adminlte-input>
+                <x-adminlte-input name="email" type="email" label="email" required></x-adminlte-input>
+                <x-adminlte-input name="postal" label="邮编" required></x-adminlte-input>
+                <x-adminlte-input name="country" label="国家" required></x-adminlte-input>
+                <x-adminlte-input name="state" label="state" required></x-adminlte-input>
+                <x-adminlte-input name="city" label="city" required></x-adminlte-input>
+                <x-adminlte-input name="street1" label="street1" required></x-adminlte-input>
+                <x-adminlte-input name="street2" label="street2"></x-adminlte-input>
+                <x-adminlte-input name="product_code" label="pcode"></x-adminlte-input>
+                <x-adminlte-input name="description" label="description"></x-adminlte-input>
+
+            </form>
+        </x-adminlte-modal>
+    </div>
+    <div class="row">
+        <x-adminlte-modal id="modalImport" size="lg" theme="info" icon="fas fa-file-import">
+            <form id="orders-import" action="{{ adminRoute('orders.import') }}" method="POST"
+                  enctype="multipart/form-data">
+                @csrf
+                <x-adminlte-input-file name="file" igroup-size="sm" placeholder="仅支持 xml csv excel">
+                    <x-slot name="prependSlot">
+                        <div class="input-group-text bg-lightblue">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                    </x-slot>
+                </x-adminlte-input-file>
+            </form>
+            <x-slot name="footerSlot">
+                <x-adminlte-button onClick="document.getElementById('orders-import').submit()" theme="success"
+                                   type="submit" label="提交"/>
+            </x-slot>
+        </x-adminlte-modal>
+        <x-adminlte-modal title="用户信息" id="payer_info" size="lg" theme="teal" icon="fas fa-user">
+            <div class="body"></div>
+        </x-adminlte-modal>
+    </div>
+
 @stop
 @section('js')
     <script>
         $('document').ready(function () {
             function rate(total, currency) {
                 $.ajax({
-                    url: "{{ adminRoute('rate.select') }}",
+                    url: "{{ adminRoute('orders.index') }}",
                     method: "get",
                     async: false,
                     data: {
@@ -93,6 +97,41 @@
                 })
             }
 
+            function operateFormatter(value, row, index) {
+                return [
+                    '<a class="edit" href="javascript:void(0)" title="edit">',
+                    '<i class="fas fa-edit"></i>',
+                    '</a>  ',
+                    // '<a class="remove" href="javascript:void(0)" title="Remove">',
+                    // '<i class="fa fa-trash"></i>',
+                    // '</a>',
+                    '<a class="permissions" data-toggle="modal" data-target="#modalPermission" href="javascript:;" title="permissions">',
+                    '<i class="fas fa-key"></i>',
+                    '</a>'
+                ].join('')
+            }
+
+            function buyerInfoFormatter() {
+                return "<a class='buyer_info'>点击查看</a>";
+            }
+
+            function pcodeSave(value){
+                alert(value)
+            }
+
+            window.buyerInfoEvent = {
+                'click .buyer_info': function (e, value, row, index) {
+                    let html = `<ul class="list-group">`;
+                    for (let i in value) {
+                        html += `<li class="list-group-item">${i} : ${value[i]}</li>`
+                    }
+                    html += '</ul>'
+                    const payer_info = $('#payer_info')
+                    payer_info.attr('title', 111)
+                    payer_info.find('.body').html(html)
+                    payer_info.modal();
+                }
+            }
             const totalInput = $('input[name="total"]')
             const currencyInput = $('select[name="currency"]')
             totalInput.change(function () {
@@ -123,11 +162,12 @@
                 },
                 queryParamsType: '',
                 queryParams: function (params) {
+                    console.log(params);
                     return {
                         perPage: params.pageSize,   //页面大小
                         search: params.searchText, //搜索
-                        order: params.order, //排序
-                        ordername: params.sort, //排序
+                        sortOrder: params.sortOrder, //排序
+                        sortName: params.sortName, //排序
                         page: params.pageNumber,
 
                     };
@@ -152,27 +192,62 @@
                         field: 'trans_id',
                         title: '交易id',
                     }, {
-                        field: 'email',
-                        title: '邮箱'
+                        field: 'order_number',
+                        title: '本地交易id'
                     }, {
-                        field: 'roles',
-                        title: '角色'
+                        field: 'total',
+                        title: '总价',
+                        sortable: true,
+                    }, {
+                        field: 'total_usd',
+                        title: '总价美元',
+                        sortable: true,
+                    }, {
+                        field: 'currency',
+                        title: '货币单位',
+
+                    }, {
+                        field: 'buyer_info',
+                        title: '买家信息',
+                        formatter: buyerInfoFormatter,
+                        events: window.buyerInfoEvent
+                    }, {
+                        field: 'description',
+                        title: '购买内容',
+                    }, {
+                        field: 'product_code',
+                        title: '产品pcode',
+                        editable:{
+                            type:'text',
+                            defaultValue:'sadsadsa',
+                            save:function () {
+                                alert(111);
+                            },
+                        },
+
+
                     }, {
                         field: 'created_at',
-                        title: '创建时间'
+                        title: '创建时间',
                     }, {
                         field: 'operate',
                         title: '操作',
                         align: 'center',
                         clickToSelect: false,
-                        class: 'min-width-100',
                         events: window.operateEvents,
                         formatter: operateFormatter
                     }
                 ]
             })
+
+
+            $(window).resize(function () {
+                $table.bootstrapTable('resetView')
+            })
+
         })
     </script>
 @stop
+@section('plugins.X-Editable',true)
 @section('plugins.BootstrapTable',true)
 @section('plugins.BsCustomFileInput',true)
