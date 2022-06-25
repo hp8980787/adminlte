@@ -94,6 +94,7 @@
             timer: 2500,
             timerProgressBar: true
         })
+        window.Toaset = Toast
         @if(\Illuminate\Support\Facades\Session::has('success'))
         let message = "{{ \Illuminate\Support\Facades\Session::get('success') }}"
         Toast.fire({
@@ -110,7 +111,7 @@
         @endif
         @if ($errors->any())
         @foreach ($errors->all() as $error)
-         Toast.fire({
+        Toast.fire({
             icon: 'error',
             title: "{{ $error }}",
         })

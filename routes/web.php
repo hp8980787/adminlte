@@ -41,5 +41,8 @@ Route::name(config('admin.route.name'))->prefix(config('admin.route.prefix'))->m
     Route::resource('storehouse',\App\Http\Controllers\Admin\StorehouseController::class)->parameter('storehouse','id')->except('show');
     Route::resource('orders',\App\Http\Controllers\Admin\OrdersController::class)->parameter('orders','id')->except('show');
     Route::post('orders-import',[\App\Http\Controllers\Admin\OrdersController::class,'import'])->name('orders.import');
+    Route::put('orders-editable',[\App\Http\Controllers\Admin\OrdersController::class,'editable'])->name('orders.editable');
+    Route::post('orders-link',[\App\Http\Controllers\Admin\OrdersController::class,'link'])->name('orders.link');
     Route::get('rate/select',[\App\Http\Controllers\Admin\RateController::class,'select'])->name('rate.select');
+
 });

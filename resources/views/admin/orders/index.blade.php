@@ -15,11 +15,12 @@
             <x-adminlte-button label="create" data-toggle="modal" data-target="#modalAdd" theme="success"/>
             <x-adminlte-button label="导入" data-toggle="modal" data-target="#modalImport" theme="info"
                                icon="fas fa-file-import"/>
+            <x-adminlte-button onClick="link()" theme="primary" label="产品关联" icon="fas fa-link"/>
         </div>
     </div>
     <div class="row">
         <div class="table-responsive">
-            <table id="table" data-editable="true"  data-editable-emptytext="product_code">
+            <table id="table" data-editable="true" data-editable-emptytext="product_code">
             </table>
         </div>
     </div>
@@ -80,7 +81,45 @@
 @stop
 @section('js')
     <script>
+        function link() {
+            const data = $('#table').bootstrapTable('getSelections')
+            if (data.length == 0) {
+                Swal.fire({
+                    position: 'top-start',
+                    icon: 'error',
+                    title: '所选产品不能为空!',
+                    showConfirmButton: false,
+                    timer: 1800
+                })
+                return false;
+            }
+            let  ids = data.map(function (v) {
+                if (v.product_code&&v.product_code!=null) {
+                    console.log(v)
+                    return v.id;
+                }
+            })
+            ids = ids.filter(function (v){
+                console.log(v)
+                return v && v!=null
+            })
+            console.log(ids)
+            $.ajax({
+                url: "{{ adminRoute('orders.link') }}",
+                method: 'post',
+                data: {
+                    id: ids
+                },
+                async: false,
+                success: function (res) {
+                    console.log(res)
+                }
+            })
+        }
+
         $('document').ready(function () {
+
+
             function rate(total, currency) {
                 $.ajax({
                     url: "{{ adminRoute('orders.index') }}",
@@ -115,7 +154,7 @@
                 return "<a class='buyer_info'>点击查看</a>";
             }
 
-            function pcodeSave(value){
+            function pcodeSave(value) {
                 alert(value)
             }
 
@@ -172,9 +211,9 @@
 
                     };
                 },
+                clickToSelect: true,
                 showHeader: true,
                 showColumns: true,
-                // hideColumn: ['sku'],
                 showRefresh: true,
                 pagination: true,//分页
                 sidePagination: 'server',//服务器端分页
@@ -217,13 +256,48 @@
                     }, {
                         field: 'product_code',
                         title: '产品pcode',
-                        editable:{
-                            type:'text',
-                            defaultValue:'sadsadsa',
-                            save:function () {
-                                alert(111);
-                            },
-                        },
+                        editable: function (value, row, index) {
+                            return {
+                                type: 'text',
+                                validate: function (value) {
+                                    console.log(value)
+                                    if ($.trim(value) == '') {
+                                        return 'This field is required';
+                                    }
+
+                                    if (!value.includes(',')) {
+                                        return '格式错误'
+                                    }
+                                    let array = value.split(',')
+                                    let reg = new RegExp("([\w+\-\+\_\.\#\@\&\*\(\)\|\,]+\|\d+)", "g");
+                                    array = array.filter(function (s) {
+                                        return s && s.trim();
+                                    })
+                                    for (let i in array) {
+                                        if (!array[i].match(reg)) {
+                                            return '格式错误'
+                                        }
+                                    }
+                                },
+                                url: "{{ adminRoute('orders.editable') }}",
+                                params: function (params) {
+                                    params.id = row.id
+                                    return params
+                                },
+                                ajaxOptions: {
+                                    type: 'put',
+                                    dataType: 'json'
+                                },
+                                success: function (response, newValue) {
+                                    if (!response.success) return response.msg;
+                                    window.Toaset.fire({
+                                        icon: 'success',
+                                        title: '成功'
+                                    })
+                                    $table.bootstrapTable('refresh')
+                                }
+                            }
+                        }
 
 
                     }, {
@@ -239,7 +313,7 @@
                     }
                 ]
             })
-
+            // $table.bootstrapTable('hideColumn', ['id'])
 
             $(window).resize(function () {
                 $table.bootstrapTable('resetView')
