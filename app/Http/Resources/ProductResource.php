@@ -9,7 +9,7 @@ class ProductResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
@@ -17,7 +17,8 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'sku' => $this->sku,
-            'name' => $this->name,
+            'jianjie1' => $this->jianjie1,
+            'jianjie2' => $this->jianjie2,
             'category' => $this->category,
             'brand' => $this->brand,
             'cover_img' => $this->cover_img,
@@ -35,9 +36,9 @@ class ProductResource extends JsonResource
             'replace' => $this->replace,
             'description' => $this->description,
             'stock' => $this->stock,
-            'editUrl'=>adminRoute('products.edit',[$this->id]),
-            'delUrl'=>adminRoute('products.destroy',[$this->id]),
-            'data'=>$this->created_at
+            'editUrl' => adminRoute('products.edit', [$this->id]),
+            'delUrl' => adminRoute('products.destroy', [$this->id]),
+            'data' => $this->created_at
         ];
     }
 }

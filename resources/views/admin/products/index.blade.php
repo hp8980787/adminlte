@@ -216,7 +216,7 @@
         }
 
         function imgFormatter(value, row, index) {
-            return `<img width="100px" src="/${value}">`;
+            return `<img width="100px" src="${value}">`;
         }
 
         $('#table').bootstrapTable({
@@ -262,9 +262,12 @@
                     title: 'sku',
                     class: 'min-width-200'
                 }, {
-                    field: 'name',
+                    field: 'jianjie1',
                     title: 'name(jianjie1)',
-                }, {
+                },{
+                  field: 'jianjie2',
+                  title: 'jianjie2'
+                },{
                     field: 'category',
                     title: '分类',
                 }, {
@@ -328,7 +331,7 @@
                 }
             ]
         })
-        $('#table').bootstrapTable('hideColumn', ['imgs', 'size', 'replace', 'description', 'bzq', 'id']);
+        $('#table').bootstrapTable('hideColumn', ['imgs', 'size', 'replace', 'description', 'bzq', 'id','jianjie2']);
     </script>
 @stop
 

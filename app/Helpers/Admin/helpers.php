@@ -1,4 +1,7 @@
 <?php
+
+use Illuminate\Support\Str;
+
 if (!function_exists('adminRoute')) {
     function adminRoute($router, $array = null): string
     {
@@ -38,7 +41,7 @@ if (!function_exists('responseTable')) {
 
 function rate(string $currency): float
 {
-    if ( \Illuminate\Support\Facades\Cache::has('rate')) {
+    if (\Illuminate\Support\Facades\Cache::has('rate')) {
         return \Illuminate\Support\Facades\Cache::get('rate')[$currency];
     } else {
 //        $client = new \GuzzleHttp\Client();
@@ -86,5 +89,13 @@ function export54($var, $indent = "")
             return $var ? "TRUE" : "FALSE";
         default:
             return var_export($var, TRUE);
+    }
+}
+
+if (!function_exists('generateSku')) {
+    function generateSku(): string
+    {
+        $now = now()->format('ymdhis');
+        return $now . substr(time(), -1, 4) . Str::random(5);
     }
 }

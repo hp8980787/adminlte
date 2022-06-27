@@ -9,7 +9,8 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $table = 'admin_products';
+    protected $table = 'products';
+    protected $imgPath='https://www.batteriexpert.com/img/';
     protected $fillable = [
         'name', 'sku', 'category', 'brand', 'dl', 'dy', 'size', 'bzq', 'price_eu', 'price_us', 'price_uk',
         'price_jp', 'replace', 'stock', 'description', 'cover_img', 'imgs'
@@ -24,5 +25,9 @@ class Product extends Model
         return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
     }
 
+    public function getCoverImgAttribute($value)
+    {
+        return $this->imgPath . $value.'.jpg';
+    }
 
 }

@@ -93,17 +93,15 @@
                 })
                 return false;
             }
-            let  ids = data.map(function (v) {
-                if (v.product_code&&v.product_code!=null) {
-                    console.log(v)
+            let ids = data.map(function (v) {
+                if (v.product_code && v.product_code != null) {
                     return v.id;
                 }
             })
-            ids = ids.filter(function (v){
-                console.log(v)
-                return v && v!=null
+            ids = ids.filter(function (v) {
+                return v && v != null
             })
-            console.log(ids)
+
             $.ajax({
                 url: "{{ adminRoute('orders.link') }}",
                 method: 'post',
@@ -112,14 +110,35 @@
                 },
                 async: false,
                 success: function (res) {
-                    console.log(res)
+                    let unFInd = res.unFind;
+                    let rows = [];
+                    for (let i in data) {
+                        if (unFInd.indexOf(data[i].id) !== -1) {
+                            rows.push(i)
+                        }
+                    }
+                    if (rows.length > 0) {
+                        $('#table').bootstrapTable('refresh');
+                    }
+
+                    console.log(rows, res, data)
                 }
             })
         }
 
+        function rowsLink(row, index) {
+            var classes = [
+                'bg-red',
+                '',
+                'bg-green',
+            ]
+            return {
+                classes: classes[row.link_status+1],
+            }
+
+        }
+
         $('document').ready(function () {
-
-
             function rate(total, currency) {
                 $.ajax({
                     url: "{{ adminRoute('orders.index') }}",
@@ -137,21 +156,34 @@
             }
 
             function operateFormatter(value, row, index) {
-                return [
-                    '<a class="edit" href="javascript:void(0)" title="edit">',
-                    '<i class="fas fa-edit"></i>',
-                    '</a>  ',
-                    // '<a class="remove" href="javascript:void(0)" title="Remove">',
-                    // '<i class="fa fa-trash"></i>',
-                    // '</a>',
-                    '<a class="permissions" data-toggle="modal" data-target="#modalPermission" href="javascript:;" title="permissions">',
-                    '<i class="fas fa-key"></i>',
-                    '</a>'
-                ].join('')
+                let html ='';
+                html+= '<a class="edit" href="javascript:void(0)" title="edit">'
+                html+='<i class="fas fa-edit"></i>'
+                html+='</a>'
+                if(row.link_status===1){
+                    html+=`<a class="shipping" href="javascript:void(0)" title="发货"><i class="fas fa-truck"></i> </a>`
+                }
+                return html
+            }
+
+            window.operateEvents={
+                'click .shipping':function (e,value,row,index) {
+                    $.ajax({
+                        url:"{{ adminRoute('orders.shipping') }}",
+                        method:'post',
+                        data:{
+                            id:row.id
+                        },
+                        async:true,
+                        success:function (res){
+                            console.log(res);
+                        }
+                    })
+                }
             }
 
             function buyerInfoFormatter() {
-                return "<a class='buyer_info'>点击查看</a>";
+                return "<a class='buyer_info bg-info' >点击查看</a>";
             }
 
             function pcodeSave(value) {
@@ -220,6 +252,7 @@
                 pageNumber: 1,
                 pageList: [10, 20, 50, 100],//分页步进值
                 search: true,//显示搜索框
+                rowStyle: rowsLink,
                 columns: [
                     {
                         checkbox: true

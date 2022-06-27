@@ -14,6 +14,7 @@ class OrdersController extends Controller
 {
     public function index(Request $request)
     {
+
         if ($request->ajax()) {
             $query = Order::query();
             if ($search = $request->search) {
@@ -39,7 +40,6 @@ class OrdersController extends Controller
 
             return response()->json(new OrderCollection($data));
         }
-
         return view('admin.orders.index');
     }
 
@@ -64,30 +64,83 @@ class OrdersController extends Controller
     public function link(Request $request)
     {
         $ids = $request->id;
+        if (!$ids) {
+            return response('error', 500);
+        }
         $orders = Order::query()->whereIn('id', $ids)->get();
         $codes = [];
         $unFind = [];
-        foreach ($orders as $val) {
+        $exists = [];
+        $link = [];
+        foreach ($orders as $order) {
 
-            $codes = array_map(function ($val) {
-
-                $array = explode('|', $val);
-
+            $codes = array_map(function ($order) {
+                $array = explode('|', $order);
                 return [
                     'pcode' => $array[0],
                     'quantity' => $array[1]
                 ];
-            }, array_filter(explode(',', $val->product_code)));
+            }, array_filter(explode(',', $order->product_code)));
             foreach ($codes as $code) {
-                $product = DB::table('products')->where('pcode', 'like', "%$code[pcode]%")->first();
-                if ($product) {
+                $product = DB::table('products')->where('pcode', 'like', "%$code[pcode]%")
+                    ->orWhere('pcodes', 'like', "%$code[pcode]%")
+                    ->first();
 
+                if ($product) {
+                    if ($res = DB::table('order_products')->where('product_id', $product->id)->where('order_id', $order->id)->first()) {
+                        $exists[] = $order->id;
+                    } else {
+                        $link[] = $order->id;
+                        $order->products()->attach($product->id, ['quantity' => $code['quantity']]);
+                    }
                 } else {
-                    $unFind[]=$val->id;
+                    $unFind[] = $order->id;
                 }
             }
-//
+
         }
+
+        Order::query()->whereIn('id', array_merge($exists, $link))->update([
+            'link_status' => 1
+        ]);
+        //判断是否能发货
+        $orders = Order::query()->with('products')->whereIn('id', array_merge($exists, $link))->get();
+
+        foreach ($orders as $order) {
+            $products = $order->products;
+            foreach ($products as $product) {
+                if ($product->stock >= $product->pivot->quantity) {
+                    $order->is_shipping = 1;
+                    $order->save();
+                }
+
+            }
+
+        }
+        Order::query()->whereIn('id', $unFind)->update([
+            'link_status' => -1
+        ]);
+        return response()->json([
+            'unFind' => $unFind,
+            'exists' => $exists,
+            'link' => $link
+        ]);
+    }
+
+    /*
+     * 订单发货
+     *
+     *
+     */
+    public function shipping(Request $request)
+    {
+        if (is_array($request->id)) {
+
+        } else {
+            $orders = Order::query()->with('products')->findOrFail($request->id);
+        }
+        $products = $orders->products;
+
     }
 
 }

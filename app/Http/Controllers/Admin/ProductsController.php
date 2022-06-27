@@ -43,10 +43,13 @@ class ProductsController extends Controller
             $query = $this->product->where('status', 1);
             if ($request->search) {
                 $search = $request->search;
-                $query->where('name', 'like', "%$search%")
+                $query->where('jianjie1', 'like', "%$search%")
                     ->orWhere('category', 'like', "%$search%")
                     ->orWhere('replace', 'like', "%$search%")
                     ->orWhere('description', 'like', "%$search%")
+                    ->orWhere('jianjie2', 'like', "%$search%")
+                    ->orWhere('pcode', 'like', "%$search%")
+                    ->orWhere('pcodes', 'like', "%$search%")
                     ->orWhere('sku', 'like', "%$search%");
             }
             $products = $query->paginate($perPage);
