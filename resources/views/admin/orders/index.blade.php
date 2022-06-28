@@ -77,10 +77,83 @@
             <div class="body"></div>
         </x-adminlte-modal>
     </div>
+    <div class="row">
+        <x-adminlte-modal id="shipping" size="md" theme="info" title="选择发货仓库" icon="fas fa-warehouse">
+
+        </x-adminlte-modal>
+    </div>
+    <div class="row" style="display: block">
+        <x-adminlte-modal id="purchase" title="采购" size="lg" width="100%" theme="teal" icon="fas fa-truck">
+            <form action="{{ adminRoute('purchase.store') }}" method="post">
+                @csrf
+                <x-adminlte-card title="采购创建单" theme="info" theme-mode="info"
+                                 size="lg"      class="elevation-3" body-class="bg-grey" header-class="bg-info"
+                                 footer-class="bg-info border-top rounded border-light"
+                                 icon="fas fa-lg fa-bell" collapsible removable maximizable>
+                    <x-slot name="toolsSlot">
+                        @php
+                            $config = [
+                                'format' => 'YYYY-MM-DD HH.mm',
+                                'dayViewHeaderFormat' => 'MMM YYYY',
+                                'minDate' => "js:moment().startOf('month')",
+                                'maxDate' => "js:moment().endOf('year')",
+                                'daysOfWeekDisabled' => [0, 6],
+                            ];
+                        @endphp
+                        <x-adminlte-input-date name="deadline_at" label="采购截止时间" igroup-size="sm"
+                                               value="{{ old('deadline_at') }}" theme="info" :config="$config"
+                                               placeholder="Choose a working day...">
+                            <x-slot name="appendSlot">
+                                <div class="input-group-text bg-dark">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                            </x-slot>
+                        </x-adminlte-input-date>
+                    </x-slot>
+                    <div style="display: flex;flex-direction: row;">
+                        <x-adminlte-input fgroup-class="col-md-6" value="{{ old('title') }}" label="title" name="title"
+                                          required
+                                          placeholder="请填写title"></x-adminlte-input>
+                        <x-adminlte-select fgroup-class="col-md-6" name="supplier_id" label="供应商">
+                            <option value="1">aa公司</option>
+                            <option value="2">b公司</option>
+                            <option value="3">c公司</option>
+                            <option value="add">创建</option>
+                        </x-adminlte-select>
+                    </div>
+                    <x-adminlte-textarea label="备注" name="remark"></x-adminlte-textarea>
+                    <div class="col-md-3 mt-3 mb-3">
+                        <x-adminlte-button id="addrow" theme="info" label="添加列"></x-adminlte-button>
+                    </div>
+                    <table id="myTable" class=" table order-list">
+                        <thead>
+                        <tr>
+                            <td>仓库(必须)</td>
+                            <td>产品(必须)</td>
+                            <td>采购价格(必须)</td>
+                            <td>采购数量(必须)</td>
+                            <td>说明</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <x-slot name="footerSlot">
+                        <x-adminlte-button class="d-flex ml-auto" theme="light" type="submit" label="submit"
+                                           icon="fas fa-sign-in"/>
+                    </x-slot>
+                </x-adminlte-card>
+            </form>
+        </x-adminlte-modal>
+    </div>
+
 
 @stop
 @section('js')
     <script>
+        //把订单产品和数据库产品链接
         function link() {
             const data = $('#table').bootstrapTable('getSelections')
             if (data.length == 0) {
@@ -117,15 +190,12 @@
                             rows.push(i)
                         }
                     }
-                    if (rows.length > 0) {
-                        $('#table').bootstrapTable('refresh');
-                    }
-
-                    console.log(rows, res, data)
+                    $('#table').bootstrapTable('refresh');
                 }
             })
         }
 
+        //每行的样式
         function rowsLink(row, index) {
             var classes = [
                 'bg-red',
@@ -133,12 +203,61 @@
                 'bg-green',
             ]
             return {
-                classes: classes[row.link_status+1],
+                classes: classes[row.link_status + 1],
             }
 
         }
 
+        //每行子视图采购方法
+        function purchase(id, sku) {
+            console.log(id, sku);
+            var cols = "";
+            cols += `<td><select name="storehouse_id[]" class=" form-control">` + options + `</select></td>`;
+            cols += ` <td><select  name="product_id[]" class="js-data-example-ajax form-control" value="${id}" required><option value="${id}">${sku}</option></select></td>`;
+            cols += '<td><input type="text" class="form-control" name="price[]" required /></td>';
+            cols += '<td><input type="number" min="1" class="form-control" name="quantity[]" required /></td>';
+            cols += '<td><input type="text" class="form-control" name="explain[]"  /></td>';
+            cols += '<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>';
+
+            $('#myTable').append(cols)
+            $('#purchase').modal()
+        }
+
+
         $('document').ready(function () {
+
+
+            function expendFormatter(value, row, index) {
+                let html = '';
+                html += `<table class="table " width="50%">`
+                html += `<thead><th>sku</th> <th>pcode</th> <th>购买数量</th> <th>库存</th> <th>操作</th></thead>`
+                html += `<tbody>`
+                $.ajax({
+                    url: "{{ adminRoute('orders.detail') }}",
+                    method: 'get',
+                    data: {
+                        id: row.id
+                    },
+                    async: false,
+                    success: function (res) {
+                        for (let i in res) {
+                            let product = res[i]
+                            html += `<tr><th>${product.sku}</th><th>${product.pcode}</th><th>${product.pivot.quantity}</th>
+<th>${product.stock}</th><th><a href="javascript:;"  onclick="purchase('${product.id}','${product.sku}')" title="采购"><i class="fas fa-truck"></i>采购</a></th>
+    </tr>`
+                        }
+                    }
+                })
+                html += `</tbody>`
+                html += `</table>`
+                return html
+            }
+
+            function detailFilter(value, row, index) {
+                if (row.link_status === 1) return true
+                return false
+            }
+
             function rate(total, currency) {
                 $.ajax({
                     url: "{{ adminRoute('orders.index') }}",
@@ -156,29 +275,30 @@
             }
 
             function operateFormatter(value, row, index) {
-                let html ='';
-                html+= '<a class="edit" href="javascript:void(0)" title="edit">'
-                html+='<i class="fas fa-edit"></i>'
-                html+='</a>'
-                if(row.link_status===1){
-                    html+=`<a class="shipping" href="javascript:void(0)" title="发货"><i class="fas fa-truck"></i> </a>`
+                let html = '';
+                html += '<a class="edit" href="javascript:void(0)" title="edit">'
+                html += '<i class="fas fa-edit"></i>'
+                html += '</a>'
+                if (row.is_shipping === 1) {
+                    html += `<a class="shipping" href="javascript:void(0)" title="发货"><i class="fas fa-truck"></i> </a>`
                 }
                 return html
             }
 
-            window.operateEvents={
-                'click .shipping':function (e,value,row,index) {
+            window.operateEvents = {
+                'click .shipping': function (e, value, row, index) {
                     $.ajax({
-                        url:"{{ adminRoute('orders.shipping') }}",
-                        method:'post',
-                        data:{
-                            id:row.id
+                        url: "{{ adminRoute('orders.warehouse') }}",
+                        method: 'get',
+                        data: {
+                            id: row.id
                         },
-                        async:true,
-                        success:function (res){
-                            console.log(res);
+                        async: false,
+                        success: function (res) {
+
                         }
                     })
+                    $('#shipping').modal()
                 }
             }
 
@@ -233,7 +353,6 @@
                 },
                 queryParamsType: '',
                 queryParams: function (params) {
-                    console.log(params);
                     return {
                         perPage: params.pageSize,   //页面大小
                         search: params.searchText, //搜索
@@ -252,6 +371,9 @@
                 pageNumber: 1,
                 pageList: [10, 20, 50, 100],//分页步进值
                 search: true,//显示搜索框
+                detailView: true,
+                detailFormatter: expendFormatter,
+                detailFilter: detailFilter,
                 rowStyle: rowsLink,
                 columns: [
                     {
@@ -353,8 +475,113 @@
             })
 
         })
+
+        //modal 采购方法
+        function matchCustom(params, data) {
+            // If there are no search terms, return all of the data
+            if ($.trim(params.term) === '') {
+                return data;
+            }
+
+            // Do not display the item if there is no 'text' property
+            if (typeof data.text === 'undefined') {
+                return null;
+            }
+
+            // `params.term` should be the term that is used for searching
+            // `data.text` is the text that is displayed for the data object
+            if (data.text.indexOf(params.term) > -1) {
+                var modifiedData = $.extend({}, data, true);
+                modifiedData.text += ' (matched)';
+
+                // You can return modified objects from here
+                // This includes matching the `children` how you want in nested data sets
+                return modifiedData;
+            }
+
+            // Return `null` if the term should not be displayed
+            return null;
+        }
+
+        $.ajax({
+            url: "{{ adminRoute('supplier.index') }}",
+            method: "get",
+            success: (res) => {
+                let options = [];
+                for (let i in res) {
+                    options += `<option value="${res[i].id}">${res[i].name}</option>`
+                }
+                $('#supplier_id').html(options)
+            }
+        })
+        var options = '';
+        $.ajax({
+            url: "{{ adminRoute('storehouse.index') }}",
+            method: 'get',
+            async: false,
+            success: (res) => {
+
+                for (let i in res) {
+                    options += `<option value="${i}">${res[i]}</option>`
+                }
+            }
+        })
+
+        var counter = 0;
+
+        function select2Init() {
+            $('.js-data-example-ajax').select2({
+                matcher: matchCustom,
+                dropdownAutoWidth: true,
+                width: '200px',
+                ajax: {
+                    url: "{{ adminRoute('products.pagination') }}",
+                    dataType: 'json',
+
+                }
+            });
+        }
+
+
+        $("#addrow").on("click", function () {
+            var newRow = $("<tr>");
+            var cols = "";
+            cols += `<td><select name="storehouse_id[]" class=" form-control">` + options + `</select></td>`;
+            cols += ` <td><select  name="product_id[]" class="js-data-example-ajax form-control" required></select></td>`;
+            cols += '<td><input type="text" class="form-control" name="price[]" required /></td>';
+            cols += '<td><input type="number" min="1" class="form-control" name="quantity[]" required /></td>';
+            cols += '<td><input type="text" class="form-control" name="explain[]"  /></td>';
+            cols += '<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>';
+            newRow.append(cols);
+            $("table.order-list").append(newRow);
+            select2Init()
+            counter++;
+        });
+
+
+        $("table.order-list").on("click", ".ibtnDel", function (event) {
+            $(this).closest("tr").remove();
+            counter -= 1
+        });
+
+
+        function calculateRow(row) {
+            var price = +row.find('input[name^="price"]').val();
+
+        }
+
+        function calculateGrandTotal() {
+            var grandTotal = 0;
+            $("table.order-list").find('input[name^="price"]').each(function () {
+                grandTotal += +$(this).val();
+            });
+            $("#grandtotal").text(grandTotal.toFixed(2));
+        }
+
     </script>
 @stop
 @section('plugins.X-Editable',true)
 @section('plugins.BootstrapTable',true)
 @section('plugins.BsCustomFileInput',true)
+@section('plugins.TempusDominusBs4', true)
+@section('plugins.Select2', true)

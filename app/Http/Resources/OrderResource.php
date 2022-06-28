@@ -26,6 +26,7 @@ class OrderResource extends JsonResource
             'status' => $this->status,
             'created_at' => $this->created_at,
             'link_status' => $this->link_status,
+            'is_shipping' => $this->is_shipping,
             'buyer_info' => [
                 'name' => $this->name,
                 'phone' => $this->phone,

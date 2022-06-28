@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\OrdersLinkProducts;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderCollection;
 use App\Imports\OrdersImport;
@@ -104,19 +105,8 @@ class OrdersController extends Controller
             'link_status' => 1
         ]);
         //判断是否能发货
-        $orders = Order::query()->with('products')->whereIn('id', array_merge($exists, $link))->get();
+        OrdersLinkProducts::dispatch(array_unique(array_merge($exists, $link)));
 
-        foreach ($orders as $order) {
-            $products = $order->products;
-            foreach ($products as $product) {
-                if ($product->stock >= $product->pivot->quantity) {
-                    $order->is_shipping = 1;
-                    $order->save();
-                }
-
-            }
-
-        }
         Order::query()->whereIn('id', $unFind)->update([
             'link_status' => -1
         ]);
@@ -140,7 +130,40 @@ class OrdersController extends Controller
             $orders = Order::query()->with('products')->findOrFail($request->id);
         }
         $products = $orders->products;
+        dd($products);
 
+    }
+
+    /*
+     *
+     * 订单选择仓库发货
+     * 订单产品不可，拆分分仓库发送，要么所有产品都是本地仓库要么都是德国仓库
+     */
+    public function warehouse(Request $request)
+    {
+        $order = Order::query()->with('products')->findOrFail($request->id);
+        $products = $order->products;
+        $data = [];
+        $judge = [];
+        $warehouse = [];
+        //订单产品不可，拆分分仓库发送
+        foreach ($products as $product) {
+            //符合发货条件 即仓库stock大于等于订单数量
+            $results = DB::table('product_storehouse')->where('product_id', $product->id)
+                ->where('stock', '>=', $product->pivot->quantity)->get();
+            $warehouse[]['id'] = $results->pluck('id')->toArray();
+
+        }
+        dd($warehouse);
+        dd(array_column($warehouse, 'id'));
+
+        return response();
+    }
+
+    public function detail(Request $request)
+    {
+        $orders = Order::query()->with('products')->findOrFail($request->id);
+        return response()->json($orders->products);
     }
 
 }

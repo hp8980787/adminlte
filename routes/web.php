@@ -40,10 +40,12 @@ Route::name(config('admin.route.name'))->prefix(config('admin.route.prefix'))->m
     Route::resource('supplier',\App\Http\Controllers\Admin\SupplierController::class)->parameter('supplier','id');
     Route::resource('storehouse',\App\Http\Controllers\Admin\StorehouseController::class)->parameter('storehouse','id')->except('show');
     Route::resource('orders',\App\Http\Controllers\Admin\OrdersController::class)->parameter('orders','id')->except('show');
+    Route::get('orders-detail',[\App\Http\Controllers\Admin\OrdersController::class,'detail'])->name('orders.detail');
     Route::post('orders-import',[\App\Http\Controllers\Admin\OrdersController::class,'import'])->name('orders.import');
     Route::put('orders-editable',[\App\Http\Controllers\Admin\OrdersController::class,'editable'])->name('orders.editable');
     Route::post('orders-link',[\App\Http\Controllers\Admin\OrdersController::class,'link'])->name('orders.link');
     Route::post('orders-shipping',[\App\Http\Controllers\Admin\OrdersController::class,'shipping'])->name('orders.shipping');
+    Route::get('orders-warehouse',[\App\Http\Controllers\Admin\OrdersController::class,'warehouse'])->name('orders.warehouse');
     Route::get('rate/select',[\App\Http\Controllers\Admin\RateController::class,'select'])->name('rate.select');
 
 });

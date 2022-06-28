@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\OrdersLinkProducts;
+use App\Events\PurchaseComplete;
+use App\Listeners\ChangeOrdersShippingStatus;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -20,6 +23,12 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        PurchaseComplete::class => [
+            ChangeOrdersShippingStatus::class
+        ],
+        OrdersLinkProducts::class=>[
+            ChangeOrdersShippingStatus::class
+        ]
     ];
 
     /**
@@ -107,13 +116,13 @@ class EventServiceProvider extends ServiceProvider
                         ['text' => trans('menu.storehouse'), 'url' => adminRoute('storehouse.index'), 'icon' => 'fas fa-warehouse'],
                     ]
                 ],
-                [   'text'=>trans('menu.orders'),'icon'=>'fas fa-shopping-bag',
-                    'submenu'=>[
-                        [ 'text'=>trans('menu.orders'),'icon'=>'fas fa-shopping-bag','url'=>route('orders.index')]
+                ['text' => trans('menu.orders'), 'icon' => 'fas fa-shopping-bag',
+                    'submenu' => [
+                        ['text' => trans('menu.orders'), 'icon' => 'fas fa-shopping-bag', 'url' => route('orders.index')]
                     ]
                 ],
 
-                ];
+            ];
             $event->menu->add(...$menu);
 //            $event->menu->add(
 //                ['text' => '菜单', 'icon' => 'fas fa-bars', 'url' => '1'],

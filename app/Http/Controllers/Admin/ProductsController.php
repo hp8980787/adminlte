@@ -165,10 +165,26 @@ class ProductsController extends Controller
         $query = $this->product->select('id', DB::raw('sku as text'));
         if ($request->search) {
             $search = $request->search;
-            $query->where('name', 'like', "%$search%")
+            $query->where('jianjie1', 'like', "%$search%")
                 ->orWhere('category', 'like', "%$search%")
+                ->orWhere('jianjie2', 'like', "%$search%")
+                ->orWhere('brand', 'like', "%$search%")
+                ->orWhere('pcode', 'like', "%$search%")
+                ->orWhere('pcodes', 'like', "%$search%")
                 ->orWhere('replace', 'like', "%$search%")
                 ->orWhere('description', 'like', "%$search%")
+                ->orWhere('sku', 'like', "%$search%");
+        }
+        if ($request->q) {
+            $search = $request->q;
+            $query->where('jianjie1', 'like', "%$search%")
+                ->orWhere('category', 'like', "%$search%")
+                ->orWhere('jianjie2', 'like', "%$search%")
+                ->orWhere('brand', 'like', "%$search%")
+                ->orWhere('replace', 'like', "%$search%")
+                ->orWhere('description', 'like', "%$search%")
+                ->orWhere('pcode', 'like', "%$search%")
+                ->orWhere('pcodes', 'like', "%$search%")
                 ->orWhere('sku', 'like', "%$search%");
         }
         $products = $query->limit(15)->get();

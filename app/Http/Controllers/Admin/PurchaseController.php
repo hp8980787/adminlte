@@ -174,6 +174,7 @@ class PurchaseController extends Controller
                 dd($exception->getMessage());
             }
         }
+
         $purchase->status = 2;
         $purchase->save();
         return response('成功');

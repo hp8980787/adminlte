@@ -12,3 +12,22 @@
 .min-width-100 {
     min-width: 100px;
 }
+.min-width-200 {
+    min-width: 200px
+}
+
+.min-width-100 {
+    min-width: 100px;
+}
+
+.fa-clock {
+    color: black;
+}
+
+.fa-times {
+    color: black !important;
+}
+
+.fa-calendar-alt {
+    color: black;
+}
