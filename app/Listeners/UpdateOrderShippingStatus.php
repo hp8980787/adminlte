@@ -2,21 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Events\OrdersLinkProducts;
+use App\Events\UpdateOrder;
 use App\Models\Order;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 
-/*
- * 更新orders 是否发货状态
- *
- */
-
-class ChangeOrdersShippingStatus
+class UpdateOrderShippingStatus
 {
-
-
     /**
      * Create the event listener.
      *
@@ -24,16 +16,16 @@ class ChangeOrdersShippingStatus
      */
     public function __construct()
     {
-
+        //
     }
 
     /**
      * Handle the event.
      *
-     * @param \App\Events\OrdersLinkProducts $event
+     * @param  \App\Events\UpdateOrder  $event
      * @return void
      */
-    public function handle(OrdersLinkProducts $event)
+    public function handle(UpdateOrder $event)
     {
         $ids = $event->orders;
         $orders = Order::query()->with('products')->whereIn('id', $ids)->get();

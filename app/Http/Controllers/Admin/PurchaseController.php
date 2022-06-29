@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\UpdateOrder;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PurchaseRequest;
 use App\Http\Resources\PurchaseCollnection;
@@ -139,15 +140,17 @@ class PurchaseController extends Controller
     public function complete(Request $request)
     {
         $purchase = Purchase::query()->with('items')->findOrFail($request->id);
+
         if ($purchase->status != 1) {
             return response('发生错误', 500);
         }
-        if ($purchase->status==2){
+        if ($purchase->status == 2) {
             return response('发生错误', 500);
         }
         if (sizeof($purchase->items) < 1) {
             return response('发生错误', 500);
         }
+
         foreach ($purchase->items as $item) {
             try {
                 DB::beginTransaction();
@@ -177,6 +180,10 @@ class PurchaseController extends Controller
 
         $purchase->status = 2;
         $purchase->save();
+        //更新订单
+        $ids = $purchase->items->pluck('product_id');
+        $orderId = DB::table('order_products')->whereIn('product_id', $ids)->get()->pluck('order_id')->toArray();
+        UpdateOrder::dispatch($orderId);
         return response('成功');
     }
 }

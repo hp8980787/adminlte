@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\OrdersLinkProducts;
+use App\Events\UpdateOrder;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderCollection;
 use App\Imports\OrdersImport;
@@ -55,9 +55,9 @@ class OrdersController extends Controller
 
     public function editable(Request $request)
     {
-        $order = Order::query()->findOrFail($request->id);
+        $order = Order::query()->with('products')->findOrFail($request->id);
         $order->update([
-            $request->name => $request->value
+            $request->name => trim($request->value)
         ]);
         return response()->json(['success' => true]);
     }
@@ -105,7 +105,7 @@ class OrdersController extends Controller
             'link_status' => 1
         ]);
         //判断是否能发货
-        OrdersLinkProducts::dispatch(array_unique(array_merge($exists, $link)));
+        UpdateOrder::dispatch(array_unique(array_merge($exists, $link)));
 
         Order::query()->whereIn('id', $unFind)->update([
             'link_status' => -1
@@ -151,11 +151,21 @@ class OrdersController extends Controller
             //符合发货条件 即仓库stock大于等于订单数量
             $results = DB::table('product_storehouse')->where('product_id', $product->id)
                 ->where('stock', '>=', $product->pivot->quantity)->get();
-            $warehouse[]['id'] = $results->pluck('id')->toArray();
+
+            if (sizeof($results) > 0) {
+                $storehouse = $results->pluck('id')->toArray();
+                foreach ($storehouse as $value) {
+                    $warehouse[]['id'] = $value;
+                }
+
+//                array_map(function ($v) use (&$warehouse) {
+//                    return array_push($warehouse, $v);
+//                }, $storehouse);
+            }
 
         }
+
         dd($warehouse);
-        dd(array_column($warehouse, 'id'));
 
         return response();
     }
