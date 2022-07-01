@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderCollection;
 use App\Imports\OrdersImport;
 use App\Models\Order;
+use App\Models\Storehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -53,6 +54,11 @@ class OrdersController extends Controller
         return back()->with('success', '导入成功');
     }
 
+
+    /**
+     * @note pcode编辑
+     *
+     */
     public function editable(Request $request)
     {
         $order = Order::query()->with('products')->findOrFail($request->id);
@@ -124,14 +130,43 @@ class OrdersController extends Controller
      */
     public function shipping(Request $request)
     {
+        $storehouseId = $request->storehouse_id;
+
         if (is_array($request->id)) {
 
         } else {
-            $orders = Order::query()->with('products')->findOrFail($request->id);
-        }
-        $products = $orders->products;
-        dd($products);
+            $order = Order::query()->with('products')->findOrFail($request->id);
+            try {
+                DB::beginTransaction();
+                $products = $order->products;
+                //库存加减 产品销量增加 改变订单状态为已发货
+                foreach ($products as $product) {
+                    $quantity = $product->pivot->quantity;
+                    $warehouse = $product->warehouse()->where('storehouse_id', $storehouseId)->first();
 
+                    $product->stock = $product->stock - $quantity;
+                    $product->sales = $product->sales + $quantity;
+                    $product->save();
+                    //对应仓库减少库存
+                    if ($warehouse->pivot->stock>=$quantity){
+                        $stock = $warehouse->pivot->stock - $quantity;
+                        $product->warehouse()->syncWithoutDetaching([$warehouse->id=>['stock'=>$stock]]);
+                    }else{
+                        throw new \Exception('仓库库存不够',500);
+                    }
+
+
+                }
+                $order->status = 1;
+                $order->save();
+                DB::commit();
+            } catch (\Exception $exception) {
+                DB::rollBack();
+                throw new \Exception($exception->getMessage());
+            }
+        }
+
+        return redirect()->route('orders.index')->with('success', '发货成功');
     }
 
     /*
@@ -144,30 +179,27 @@ class OrdersController extends Controller
         $order = Order::query()->with('products')->findOrFail($request->id);
         $products = $order->products;
         $data = [];
-        $judge = [];
         $warehouse = [];
         //订单产品不可，拆分分仓库发送
         foreach ($products as $product) {
             //符合发货条件 即仓库stock大于等于订单数量
             $results = DB::table('product_storehouse')->where('product_id', $product->id)
                 ->where('stock', '>=', $product->pivot->quantity)->get();
-
+            //去除当前产品符合条件的所有仓库
             if (sizeof($results) > 0) {
-                $storehouse = $results->pluck('id')->toArray();
-                foreach ($storehouse as $value) {
-                    $warehouse[]['id'] = $value;
-                }
-
-//                array_map(function ($v) use (&$warehouse) {
-//                    return array_push($warehouse, $v);
-//                }, $storehouse);
+                $storehouse = $results->pluck('storehouse_id')->toArray();
+                $data[] = $storehouse;
             }
 
         }
+        //取订单所有产品的仓库id交集，所有产品都可以同一仓库发货
+        $intersect = array_intersect(...$data);
 
-        dd($warehouse);
+        if (sizeof($intersect) < 1) return response('库存不足无法发货');
 
-        return response();
+        $storehouses = Storehouse::query()->whereIn('id', $intersect)->get();
+
+        return response()->json($storehouses);
     }
 
     public function detail(Request $request)

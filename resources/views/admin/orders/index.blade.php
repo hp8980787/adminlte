@@ -79,7 +79,12 @@
     </div>
     <div class="row">
         <x-adminlte-modal id="shipping" size="md" theme="info" title="选择发货仓库" icon="fas fa-warehouse">
-
+            <form action="{{ adminRoute('orders.shipping') }}" method="POST">
+                @csrf
+                <input type="hidden" name="id" id="order_id">
+                <x-adminlte-select name="storehouse_id" label="选择仓库"></x-adminlte-select>
+                <x-adminlte-button type="submit" theme="primary" label="提交"/>
+            </form>
         </x-adminlte-modal>
     </div>
     <div class="row" style="display: block">
@@ -87,7 +92,7 @@
             <form action="{{ adminRoute('purchase.store') }}" method="post">
                 @csrf
                 <x-adminlte-card title="采购创建单" theme="info" theme-mode="info"
-                                 size="lg"      class="elevation-3" body-class="bg-grey" header-class="bg-info"
+                                 size="lg" class="elevation-3" body-class="bg-grey" header-class="bg-info"
                                  footer-class="bg-info border-top rounded border-light"
                                  icon="fas fa-lg fa-bell" collapsible removable maximizable>
                     <x-slot name="toolsSlot">
@@ -198,9 +203,9 @@
         //每行的样式
         function rowsLink(row, index) {
             var classes = [
-                'bg-red',
+                'bg-warning',
                 '',
-                'bg-green',
+                '',
             ]
             return {
                 classes: classes[row.link_status + 1],
@@ -226,7 +231,7 @@
 
         $('document').ready(function () {
 
-
+            //行子视图
             function expendFormatter(value, row, index) {
                 let html = '';
                 html += `<table class="table " width="50%">`
@@ -253,11 +258,13 @@
                 return html
             }
 
+            //子视图过滤
             function detailFilter(value, row, index) {
                 if (row.link_status === 1) return true
                 return false
             }
 
+            //汇率
             function rate(total, currency) {
                 $.ajax({
                     url: "{{ adminRoute('orders.index') }}",
@@ -274,6 +281,7 @@
                 })
             }
 
+            //操作栏样式格式化
             function operateFormatter(value, row, index) {
                 let html = '';
                 html += '<a class="edit" href="javascript:void(0)" title="edit">'
@@ -285,6 +293,7 @@
                 return html
             }
 
+            //操作栏事件
             window.operateEvents = {
                 'click .shipping': function (e, value, row, index) {
                     $.ajax({
@@ -295,10 +304,21 @@
                         },
                         async: false,
                         success: function (res) {
+                            const data = res
+                            const select = $('select[name="storehouse_id"]')
+                            const id = $('#order_id')
+                            let options = '';
+                            // options += '<select class="select" name="storehouse_id" title="选择仓库">'
+                            data.forEach(v => {
+                                options += `<option value="${v.id}">${v.name}</option>`
+                            })
+                            id.val(row.id)
+                            select.html(options)
+                            $('#shipping').modal()
 
                         }
                     })
-                    $('#shipping').modal()
+
                 }
             }
 
@@ -306,9 +326,6 @@
                 return "<a class='buyer_info bg-info' >点击查看</a>";
             }
 
-            function pcodeSave(value) {
-                alert(value)
-            }
 
             window.buyerInfoEvent = {
                 'click .buyer_info': function (e, value, row, index) {

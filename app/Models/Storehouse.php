@@ -9,6 +9,7 @@ class Storehouse extends Model
 {
     use HasFactory;
     protected $table='storehouse';
+
     protected $fillable=[
         'name'
     ];
