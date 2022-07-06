@@ -10,21 +10,18 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UpdateOrder
+class OrderShipped
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $orders;
-    public $queue = 'default';
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($orders)
+    public function __construct()
     {
-        $this->orders = $orders;
+        //
     }
 
     /**

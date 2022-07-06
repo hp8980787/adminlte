@@ -12,7 +12,6 @@
 @stop
 
 @section('content')
-    <div class="container">
         <div class="row ml-3">
             <div class="col-md-12">
                 <x-adminlte-button label="添加角色" theme="info" data-toggle="modal"
@@ -50,10 +49,6 @@
                 </x-slot>
             </x-adminlte-modal>
         </div>
-
-    </div>
-
-
 @stop
 
 @section('css')

@@ -203,19 +203,17 @@
         //每行的样式
         function rowsLink(row, index) {
             var classes = [
-                'bg-warning',
-                '',
-                '',
+                {'background-color': 'rgba(220,53,69,0.2)'},
+                {'background-color': 'rgba(255,255,0,0.1)'},
             ]
             return {
-                classes: classes[row.link_status + 1],
+                css: classes[row.link_status + 1],
             }
 
         }
 
         //每行子视图采购方法
         function purchase(id, sku) {
-            console.log(id, sku);
             var cols = "";
             cols += `<td><select name="storehouse_id[]" class=" form-control">` + options + `</select></td>`;
             cols += ` <td><select  name="product_id[]" class="js-data-example-ajax form-control" value="${id}" required><option value="${id}">${sku}</option></select></td>`;
@@ -287,7 +285,7 @@
                 html += '<a class="edit" href="javascript:void(0)" title="edit">'
                 html += '<i class="fas fa-edit"></i>'
                 html += '</a>'
-                if (row.is_shipping === 1) {
+                if (row.is_shipping === 1 && row.status != '已发货' && row.status != '已收货') {
                     html += `<a class="shipping" href="javascript:void(0)" title="发货"><i class="fas fa-truck"></i> </a>`
                 }
                 return html
@@ -316,6 +314,11 @@
                             select.html(options)
                             $('#shipping').modal()
 
+                        },error:function (error){
+                            Toaset.fire({
+                                icon:'error',
+                                title:error.responseText
+                            })
                         }
                     })
 
@@ -466,12 +469,44 @@
                                         icon: 'success',
                                         title: '成功'
                                     })
+                                    {{--window.location.href="{{ adminRoute('orders.index') }}"--}}
                                     $table.bootstrapTable('refresh')
+                                },error:function (error) {
+                                    Toaset.fire({
+                                        icon:'error',
+                                        title:error.responseText
+                                    })
                                 }
                             }
                         }
 
 
+                    }, {
+                        field: 'link_status',
+                        title: '产品pcode',
+                        formatter: function (value) {
+                            switch (value) {
+                                case -1:
+                                    return `<span class="badge badge-danger">关联失败</span>`;
+                                case 0:
+                                    return `<span class="badge badge-warning">未关联</span>`;
+                                case 1:
+                                    return `<span class="badge badge-success">关联成功</span>`;
+                            }
+                        }
+                    }, {
+                        field: 'status',
+                        title: '状态',
+                        formatter:function (value) {
+                            switch (value) {
+                                case '未发货':
+                                    return `<span class="badge badge-warning">${value}</span>`
+                                case '已发货':
+                                    return `<span class="badge badge-info">${value}</span>`
+                                case  '已收货':
+                                    return `<span class="badge badge-success">${value}</span>`
+                            }
+                        }
                     }, {
                         field: 'created_at',
                         title: '创建时间',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Order;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderResource extends JsonResource
@@ -23,7 +24,7 @@ class OrderResource extends JsonResource
             'currency' => $this->currency,
             'description' => $this->description,
             'product_code' => $this->product_code,
-            'status' => $this->status,
+            'status' => Order::ORDER_STATUS_GROUP[$this->status],
             'created_at' => $this->created_at,
             'link_status' => $this->link_status,
             'is_shipping' => $this->is_shipping,

@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\OrderShipped;
 use App\Events\UpdateOrder;
+use App\Listeners\NotificationCustomer;
 use App\Listeners\UpdateOrderShippingStatus;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -24,6 +26,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         UpdateOrder::class => [
             UpdateOrderShippingStatus::class,
+        ],
+        OrderShipped::class=>[
+            NotificationCustomer::class
         ]
     ];
 

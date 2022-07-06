@@ -14,9 +14,15 @@ class Order extends Model
         'country', 'state', 'city', 'street1', 'street2', 'ip', 'description', 'product_code', 'status'
     ];
 
-    const ORDER_STATUS_PENDING='pending';   //待办
-    const ORDER_STATUS_RECEIVED='received'; //已收到
-    const ORDER_STATUS_DELIVERED='delivered'; //已发货
+    const ORDER_STATUS_PENDING = 'pending';   //待办
+    const ORDER_STATUS_RECEIVED = 'received'; //已收到
+    const ORDER_STATUS_DELIVERED = 'delivered'; //已发货
+
+    const ORDER_STATUS_GROUP = [
+        self::ORDER_STATUS_PENDING => '未发货',
+        self::ORDER_STATUS_DELIVERED => '已发货',
+        self::ORDER_STATUS_RECEIVED => '已收货',
+    ];
 
     protected $casts = [
         'created_at' => 'string:Y-m-d H:i:s'
