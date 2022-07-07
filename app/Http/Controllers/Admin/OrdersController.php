@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\OrderShipped;
 use App\Events\UpdateOrder;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderCollection;
 use App\Imports\OrdersImport;
+use App\Models\Logistics;
 use App\Models\Order;
 use App\Models\Storehouse;
 use Illuminate\Http\Request;
@@ -42,7 +44,9 @@ class OrdersController extends Controller
 
             return response()->json(new OrderCollection($data));
         }
-        return view('admin.orders.index');
+
+        $logistics = Logistics::query()->pluck('name', 'id');
+        return view('admin.orders.index', compact('logistics'));
     }
 
     public function import(Request $request)
@@ -138,6 +142,7 @@ class OrdersController extends Controller
         } else {
             $order = Order::query()->with('products')->findOrFail($request->id);
 
+
             try {
                 DB::beginTransaction();
                 $products = $order->products;
@@ -146,18 +151,21 @@ class OrdersController extends Controller
                     $quantity = $product->pivot->quantity;
                     $warehouse = $product->warehouse()->where('storehouse_id', $storehouseId)->first();
                     //对应仓库减少库存
-                    if ($warehouse->pivot->stock>=$quantity){
+                    if ($warehouse->pivot->stock >= $quantity) {
                         $stock = $warehouse->pivot->stock - $quantity;
-                        $product->warehouse()->syncWithoutDetaching([$warehouse->id=>['stock'=>$stock]]);
-                    }else{
-                        return back()->with('error','仓库库存不够');
-                        throw new \Exception('仓库库存不够',500);
+                        $product->warehouse()->syncWithoutDetaching([$warehouse->id => ['stock' => $stock]]);
+                    } else {
+                        return back()->with('error', '仓库库存不够');
+                        throw new \Exception('仓库库存不够', 500);
                     }
                     $product->stock = $product->stock - $quantity;
                     $product->sales = $product->sales + $quantity;
                     $product->save();
                 }
                 $order->status = Order::ORDER_STATUS_DELIVERED;
+                $order->ship_no = $request->ship_no;
+                $order->logistics_company = $request->logistics_company;
+                $order->logistics_price = $request->logistics_price;
                 $order->save();
                 DB::commit();
             } catch (\Exception $exception) {
@@ -165,7 +173,7 @@ class OrdersController extends Controller
                 throw new \Exception($exception->getMessage());
             }
         }
-
+        OrderShipped::dispatch($order);
         return redirect()->route('orders.index')->with('success', '发货成功');
     }
 
@@ -192,12 +200,12 @@ class OrdersController extends Controller
             }
 
         }
-        if (sizeof($data) < 1) return response('库存不足无法发货',500);
+        if (sizeof($data) < 1) return response('库存不足无法发货', 500);
 
         //取订单所有产品的仓库id交集，所有产品都可以同一仓库发货
         $intersect = array_intersect(...$data);
 
-        if (sizeof($intersect) < 1) return response('库存不足无法发货',500);
+        if (sizeof($intersect) < 1) return response('库存不足无法发货', 500);
 
         $storehouses = Storehouse::query()->whereIn('id', $intersect)->get();
 

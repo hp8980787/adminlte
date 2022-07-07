@@ -8,9 +8,9 @@
         "hot": "mix watch --hot",
         "prod": "npm run production",
         "production": "mix --production",
-        "queue:start": "npm run queue:remove && pm2 start process.yml",
-        "queue:stop": "pm2 stop process.yml",
-        "queue:remove": "pm2 delete process.yml"
+        "queue:start": "npm run queue:remove && pm2 start process.yml &&pm2 start process-email.yml",
+        "queue:stop": "pm2 stop process.yml && pm2 stop process-email.yml",
+        "queue:remove": "pm2 delete process.yml && pm2 delete process-email.yml"
     },
     "devDependencies": {
         "@popperjs/core": "^2.10.2",

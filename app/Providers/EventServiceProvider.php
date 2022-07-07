@@ -121,6 +121,8 @@ class EventServiceProvider extends ServiceProvider
                     'submenu' => [
                         ['text' => trans('menu.orders'), 'icon' => 'fas fa-shopping-bag', 'url' => route('orders.index')]
                     ]
+                ],[
+                    'text' =>trans('menu.logistics'),'icon'=>'fas fa-truck','url'=>route('logistics.index')
                 ],
 
             ];

@@ -77,16 +77,26 @@
             <div class="body"></div>
         </x-adminlte-modal>
     </div>
+    {{--    发货modal--}}
     <div class="row">
         <x-adminlte-modal id="shipping" size="md" theme="info" title="选择发货仓库" icon="fas fa-warehouse">
             <form action="{{ adminRoute('orders.shipping') }}" method="POST">
                 @csrf
                 <input type="hidden" name="id" id="order_id">
                 <x-adminlte-select name="storehouse_id" label="选择仓库"></x-adminlte-select>
+                <x-adminlte-input name="ship_no" required label="快递单号" />
+                <x-adminlte-select name="logistics_company" required label="选择快递公司">
+                    @foreach($logistics as $k=> $item)
+                        <option value="{{ $k }}">{{ $item }}</option>
+                    @endforeach
+                </x-adminlte-select>
+                <x-adminlte-input name="logistics_price" place="单位美元" required label="快递价格" />
                 <x-adminlte-button type="submit" theme="primary" label="提交"/>
             </form>
         </x-adminlte-modal>
     </div>
+
+    {{--        采购modal--}}
     <div class="row" style="display: block">
         <x-adminlte-modal id="purchase" title="采购" size="lg" width="100%" theme="teal" icon="fas fa-truck">
             <form action="{{ adminRoute('purchase.store') }}" method="post">
@@ -314,10 +324,10 @@
                             select.html(options)
                             $('#shipping').modal()
 
-                        },error:function (error){
+                        }, error: function (error) {
                             Toaset.fire({
-                                icon:'error',
-                                title:error.responseText
+                                icon: 'error',
+                                title: error.responseText
                             })
                         }
                     })
@@ -471,10 +481,10 @@
                                     })
                                     {{--window.location.href="{{ adminRoute('orders.index') }}"--}}
                                     $table.bootstrapTable('refresh')
-                                },error:function (error) {
+                                }, error: function (error) {
                                     Toaset.fire({
-                                        icon:'error',
-                                        title:error.responseText
+                                        icon: 'error',
+                                        title: error.responseText
                                     })
                                 }
                             }
@@ -497,7 +507,7 @@
                     }, {
                         field: 'status',
                         title: '状态',
-                        formatter:function (value) {
+                        formatter: function (value) {
                             switch (value) {
                                 case '未发货':
                                     return `<span class="badge badge-warning">${value}</span>`

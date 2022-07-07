@@ -35,7 +35,7 @@ class UpdateOrderShippingStatus
             $products = $order->products;
             foreach ($products as $product) {
                 $total = DB::table('product_storehouse')->where('product_id', $product->id)->selectRaw('sum(stock)as total')->first();
-                $product->stock = $total->total;
+                $product->stock = intval($total->total);
                 $product->save();
                 if ($product->stock >= $product->pivot->quantity) {
                     $is_shipping[] = true;

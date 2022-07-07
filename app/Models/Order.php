@@ -11,7 +11,8 @@ class Order extends Model
 
     protected $fillable = [
         'trans_id', 'order_number', 'total', 'total_usd', 'currency', 'name', 'phone', 'email', 'postal',
-        'country', 'state', 'city', 'street1', 'street2', 'ip', 'description', 'product_code', 'status'
+        'country', 'state', 'city', 'street1', 'street2', 'ip', 'description', 'product_code', 'status',
+        'logistics_company', 'logistics_price', 'ship_no'
     ];
 
     const ORDER_STATUS_PENDING = 'pending';   //待办
@@ -34,5 +35,8 @@ class Order extends Model
         return $this->belongsToMany(Product::class, 'order_products', 'order_id', 'product_id')->withTimestamps()->withPivot('quantity');
     }
 
-
+    public function logistics()
+    {
+        return $this->hasOne(Logistics::class,'id','logistics_company');
+    }
 }

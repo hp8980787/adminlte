@@ -11,6 +11,7 @@ return [
     'purchase' => '采购',
     'supplier' => '供应商',
     'storehouse'=>'仓库',
-    'orders'=>'订单'
+    'orders'=>'订单',
+    'logistics'=>'物流'
 
 ];

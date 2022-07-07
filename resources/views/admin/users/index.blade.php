@@ -189,7 +189,6 @@
             },
             showHeader: true,
             // showColumns: true,
-            hideColumn: ['sku'],
             showRefresh: true,
             pagination: true,//分页
             sidePagination: 'server',//服务器端分页

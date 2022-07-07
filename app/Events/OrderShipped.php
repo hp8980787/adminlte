@@ -14,14 +14,17 @@ class OrderShipped
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $queue = 'default';
+    public $order;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($order)
     {
-        //
+        $this->order = $order;
     }
 
     /**
